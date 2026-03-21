@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a7f45"/>
+      <stop offset="100%" stop-color="#30C263"/>
+    </linearGradient>
+    <linearGradient id="stripe" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#30C263"/>
+      <stop offset="100%" stop-color="#E56E1E"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="512" height="512" rx="112.64" fill="#050807"/>
+  <!-- Green glow bg -->
+  <circle cx="92.16" cy="112.64" r="179.2" fill="rgba(48,194,99,0.14)"/>
+  <!-- C letter mark -->
+  <text x="256" y="317.44" 
+        font-family="'Outfit',system-ui,sans-serif" 
+        font-weight="900" 
+        font-size="256" 
+        fill="url(#stripe)" 
+        text-anchor="middle" 
+        letter-spacing="-0.04em">C</text>
+  <!-- Accent dot -->
+  <circle cx="373.76" cy="174.08" r="30.72" fill="#46d47a"/>
+</svg>

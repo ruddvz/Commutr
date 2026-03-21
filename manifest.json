@@ -1,0 +1,57 @@
+{
+  "name": "COMMUTR — Canada's Fee-Free Carpooling",
+  "short_name": "COMMUTR",
+  "description": "Find intercity carpooling rides across Canada. Zero fees, secure payments, verified drivers.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#050807",
+  "theme_color": "#050807",
+  "lang": "en-CA",
+  "categories": [
+    "travel",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Search Rides",
+      "short_name": "Search",
+      "description": "Find available rides",
+      "url": "/?screen=search",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Post a Ride",
+      "short_name": "Post",
+      "description": "Offer a ride to passengers",
+      "url": "/?screen=post",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false
+}
