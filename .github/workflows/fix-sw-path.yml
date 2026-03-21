@@ -1,0 +1,38 @@
+name: Fix SW Path (one-shot)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fix service worker registration path
+        run: |
+          sed -i "s|navigator.serviceWorker.register('/sw.js')|navigator.serviceWorker.register('sw.js')|g" index.html
+          echo "Changed:"
+          grep "serviceWorker.register" index.html
+
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "fix: use relative sw.js path for GitHub Pages
+
+Changes /sw.js (absolute, broken on subdirectory) to sw.js (relative).
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+          git push
+
+      - name: Remove this workflow
+        run: |
+          git rm .github/workflows/fix-sw-path.yml
+          git commit -m "chore: remove one-shot fix workflow
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+          git push
