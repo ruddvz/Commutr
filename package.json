@@ -1,0 +1,12 @@
+{
+  "name": "commutr",
+  "version": "5.0.0",
+  "description": "Canada's fee-free intercity carpooling app — built as a mobile-first single-page web prototype.",
+  "private": true,
+  "scripts": {
+    "start": "npx serve . --listen 3000 --no-clipboard",
+    "dev": "npx serve . --listen 3000 --single"
+  },
+  "keywords": ["carpooling", "ridesharing", "commutr", "canada"],
+  "license": "MIT"
+}
