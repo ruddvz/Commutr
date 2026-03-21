@@ -88,6 +88,14 @@
         }
       });
     });
+
+    // Sync desktop nav active state
+    var desktopNav = byId('desktnav');
+    if (desktopNav) {
+      qsa('.dnb', desktopNav).forEach(function (btn) {
+        btn.classList.toggle('on', btn.getAttribute('data-screen') === group);
+      });
+    }
   }
 
   function closeTransientUi() {
@@ -265,6 +273,22 @@
     button.classList.add('on');
   }
 
+  function bindScrollMorph() {
+    var nav = byId('desktnav');
+    if (!nav) {
+      return;
+    }
+    qsa('.sa').forEach(function (area) {
+      area.addEventListener('scroll', function () {
+        if (area.scrollTop > 30) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }, { passive: true });
+    });
+  }
+
   function bindScrollAwareTabbars() {
     qsa('.scr').forEach(function (screen) {
       var scrollArea = screen.querySelector('.sa');
@@ -312,6 +336,7 @@
     updateOnboarding();
     updateNavState(currentScreen);
     bindScrollAwareTabbars();
+    bindScrollMorph();
     bindMessageButtons();
     scrollChatToEnd();
   }
