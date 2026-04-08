@@ -3,11 +3,11 @@
 */
 const CACHE_NAME = 'commutr-v5-1';
 const STATIC_ASSETS = [
-  '/commutr/',
-  '/commutr/index.html',
-  '/commutr/style.css',
-  '/commutr/app.js',
-  '/commutr/manifest.json',
+  '/Commutr/',
+  '/Commutr/index.html',
+  '/Commutr/style.css',
+  '/Commutr/app.js',
+  '/Commutr/manifest.json',
   'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Mono:ital,wght@0,400;0,500&display=swap'
 ];
 
@@ -47,7 +47,7 @@ self.addEventListener('fetch', function(event) {
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).catch(function() {
-        return caches.match('/commutr/index.html');
+        return caches.match('/Commutr/index.html');
       })
     );
     return;

@@ -1,0 +1,19 @@
+/*
+ * COMMUTR v5 — Main stylesheet entry point.
+ *
+ * During the migration to a modular architecture, this file re-exports the
+ * original monolithic style.css so Vite can bundle it unchanged.
+ *
+ * Progressive extraction plan (see organizing.md Phase 4):
+ *   - base.css       — :root variables, resets, html/body
+ *   - layout.css     — .phone, .scr, .sa, responsive breakpoints
+ *   - components.css — glass cards, buttons, inputs, chips, avatars
+ *   - navigation.css — .tabbar, .desktnav
+ *   - animations.css — @keyframes
+ *   - screens.css    — per-screen overrides
+ *
+ * Once all modules are extracted, replace the @import below with
+ * individual imports of the CSS modules above.
+ */
+
+@import url('../../style.css');
