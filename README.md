@@ -50,9 +50,23 @@ Open http://localhost:3000 — use `?screen=search` for deep links.
 - `GET|POST|DELETE /api/route-alerts`
 - `GET /api/admin/reports` (admin role)
 
+## GitHub Pages (static demo)
+
+The PWA deploys to GitHub Pages via `.github/workflows/deploy.yml`. On `*.github.io` the app runs in **demo mode**: seeded Canadian rides, inbox/chat samples, and local post/save — no live API required.
+
+| Variable              | Purpose                                           |
+| --------------------- | ------------------------------------------------- |
+| `GITHUB_PAGES=true`   | Set in CI; Vite `base` is `/Commutr/`             |
+| `VITE_DEMO_MODE=true` | Force demo experience locally                     |
+| `VITE_API_BASE_URL`   | Point the client at a deployed API when available |
+
+Preview: open the Pages URL, or locally run `pnpm build && pnpm preview` with `VITE_DEMO_MODE=true`.
+
 ## Environment
 
 See `.env.example`. Required: `JWT_SECRET` (≥32 chars). Tests use `DATABASE_URL=file:./test.db`.
+
+Frontend-only overrides: `VITE_API_BASE_URL`, `VITE_DEMO_MODE`. Regenerate maskable PNG icons with `pnpm run icons:png` (requires `sharp`).
 
 ## Product & trust copy
 

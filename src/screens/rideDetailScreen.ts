@@ -12,7 +12,7 @@ import { renderInputField } from '@/components/InputField'
 import { openBottomSheet, closeBottomSheet } from '@/components/BottomSheet'
 import { mountTopBar } from '@/components/TopBar'
 import { renderStickyActions } from '@/components/AppShell'
-import { isStaticDemo } from '@/config/runtime'
+import { isDemoExperience } from '@/config/runtime'
 import { iconShare } from '@/components/icons'
 import type { ScreenRenderContext } from '@/app/screenRegistry'
 import { escapeHtml } from '@/utils/dom'
@@ -115,7 +115,7 @@ export async function loadRideDetail(): Promise<void> {
 }
 
 export async function requestSeatOnDetail(): Promise<void> {
-  if (!authService.isAuthenticated() && !isStaticDemo) {
+  if (!authService.isAuthenticated() && !isDemoExperience()) {
     showToast('Sign in to request a seat')
     go('signup')
     return

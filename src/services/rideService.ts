@@ -1,7 +1,7 @@
 import { api } from './api'
 import type { Ride } from '@/contracts/types/Ride'
 import type { RideInput, SearchInput } from '@/contracts/schemas/rideSchema'
-import { runtimeMode } from '@/config/runtime'
+import { isDemoExperience, runtimeMode } from '@/config/runtime'
 import {
   cacheRides,
   filterDemoRides,
@@ -42,7 +42,21 @@ function toQuery(params: SearchInput): RideSearchQuery {
     date: params.date,
     seats: params.seats,
     verifiedOnly: params.verifiedOnly,
+    womenPreferredOnly: params.womenPreferredOnly,
+    maxPricePerSeat: params.maxPricePerSeat,
   }
+}
+
+function applyClientFilters(rides: Ride[], query: RideSearchQuery): Ride[] {
+  let result = [...rides]
+  if (query.verifiedOnly) result = result.filter((r) => r.driverVerified)
+  if (query.womenPreferredOnly) {
+    result = result.filter((r) => r.amenities.some((a) => a.toLowerCase().includes('women')))
+  }
+  if (query.maxPricePerSeat !== undefined) {
+    result = result.filter((r) => r.pricePerSeat <= query.maxPricePerSeat!)
+  }
+  return result
 }
 
 function fallbackRides(query: RideSearchQuery, reason: string): SearchRidesResult {
@@ -66,7 +80,7 @@ function fallbackRides(query: RideSearchQuery, reason: string): SearchRidesResul
 }
 
 export async function searchRides(params: SearchInput = {}): Promise<SearchRidesResult> {
-  if (runtimeMode === 'static-demo') {
+  if (runtimeMode === 'static-demo' || isDemoExperience()) {
     const rides = filterDemoRides(toQuery(params))
     return rides.length
       ? { status: 'demo', rides, reason: 'Showing sample routes on GitHub Pages.' }
@@ -85,8 +99,9 @@ export async function searchRides(params: SearchInput = {}): Promise<SearchRides
         .map(([k, v]) => [k, String(v)]),
     ).toString()
     const rides = await api.get<Ride[]>(`/rides?${qs}`)
-    if (rides.length) cacheRides(rides)
-    return rides.length ? { status: 'live', rides } : { status: 'empty', rides: [] }
+    const filtered = applyClientFilters(rides, toQuery(params))
+    if (filtered.length) cacheRides(filtered)
+    return filtered.length ? { status: 'live', rides: filtered } : { status: 'empty', rides: [] }
   } catch {
     return fallbackRides(toQuery(params), 'Could not reach live rides.')
   }
@@ -98,7 +113,7 @@ export const rideService = {
   },
 
   async getById(id: string): Promise<Ride> {
-    if (runtimeMode === 'static-demo') {
+    if (runtimeMode === 'static-demo' || isDemoExperience()) {
       const demo = getDemoRideById(id)
       if (demo) return demo
       throw new Error('Ride not found')
@@ -115,7 +130,7 @@ export const rideService = {
   },
 
   async create(input: RideInput): Promise<Ride> {
-    if (runtimeMode === 'static-demo') {
+    if (runtimeMode === 'static-demo' || isDemoExperience()) {
       const ride: Ride = {
         id: `local-${Date.now()}`,
         driverId: 'local-user',
@@ -141,7 +156,7 @@ export const rideService = {
   },
 
   cancel(id: string): Promise<void> {
-    if (runtimeMode === 'static-demo') return Promise.resolve()
+    if (runtimeMode === 'static-demo' || isDemoExperience()) return Promise.resolve()
     return api.delete(`/rides/${id}`)
   },
 

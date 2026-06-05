@@ -72,7 +72,9 @@ export function renderRideCard(props: RideCardProps): string {
     renderBadge(seatsLabel(ride.seatsAvailable), 'brand'),
     ride.driverVerified ? renderBadge('ID verified', 'success') : '',
     ride.amenities.includes('eco') ? renderBadge('Lower CO₂', 'default') : '',
-    ride.amenities.includes('womenPreferred') ? renderBadge('Women-preferred', 'warning') : '',
+    ride.amenities.some((a) => a.toLowerCase().includes('women'))
+      ? renderBadge('Women-preferred', 'warning')
+      : '',
   ]
     .filter(Boolean)
     .join('')

@@ -15,9 +15,10 @@ import { authService } from './services/authService'
 import { appStore } from './app/store'
 import { bindMessageButtons } from './components/chat'
 import { mountOfflineBanner } from './components/uiStates'
-import { runtimeMode } from './config/runtime'
+import { detectDemoMode, runtimeMode } from './config/runtime'
 
-function init(): void {
+async function init(): Promise<void> {
+  await detectDemoMode()
   document.documentElement.setAttribute('data-theme', 'dark')
   if (import.meta.env.DEV) {
     // eslint-disable-next-line no-console -- dev runtime mode indicator
@@ -69,6 +70,8 @@ function init(): void {
   bindMessageButtons()
 }
 
-document.addEventListener('DOMContentLoaded', init)
+document.addEventListener('DOMContentLoaded', () => {
+  void init()
+})
 registerServiceWorker()
 initPwaUpdateToast()

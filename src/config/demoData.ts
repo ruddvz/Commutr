@@ -21,7 +21,7 @@ function baseDemoRides(): Ride[] {
       seatsAvailable: 2,
       stops: ['Masonville Mall', 'Union Station area'],
       notes: 'Honda Civic · No platform fee',
-      amenities: ['Luggage', 'No smoking'],
+      amenities: ['Luggage', 'No smoking', 'women-preferred'],
       status: 'active',
       createdAt: new Date(now - 86400000).toISOString(),
     },
@@ -143,6 +143,12 @@ export type RideSearchQuery = {
   date?: string
   seats?: number
   verifiedOnly?: boolean
+  womenPreferredOnly?: boolean
+  maxPricePerSeat?: number
+}
+
+function hasWomenPreferred(ride: Ride): boolean {
+  return ride.amenities.some((a) => a.toLowerCase().includes('women'))
 }
 
 export function filterDemoRides(query: RideSearchQuery): Ride[] {
@@ -161,6 +167,12 @@ export function filterDemoRides(query: RideSearchQuery): Ride[] {
   }
   if (query.verifiedOnly) {
     rides = rides.filter((r) => r.driverVerified)
+  }
+  if (query.womenPreferredOnly) {
+    rides = rides.filter((r) => hasWomenPreferred(r))
+  }
+  if (query.maxPricePerSeat !== undefined) {
+    rides = rides.filter((r) => r.pricePerSeat <= query.maxPricePerSeat!)
   }
   if (query.date) {
     const day = query.date.slice(0, 10)

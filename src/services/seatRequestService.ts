@@ -1,6 +1,6 @@
 import { api } from './api'
 import type { SeatRequest } from '@/contracts/types/SeatRequest'
-import { isStaticDemo } from '@/config/runtime'
+import { isDemoExperience } from '@/config/runtime'
 import { storageGet, storageSet } from '@/utils/storage'
 
 const DEMO_REQUESTS_KEY = 'commutr_demo_seat_requests'
@@ -17,12 +17,12 @@ function saveDemoRequest(req: SeatRequest): void {
 
 export const seatRequestService = {
   listMine(): Promise<SeatRequest[]> {
-    if (isStaticDemo) return Promise.resolve(demoRequests())
+    if (isDemoExperience()) return Promise.resolve(demoRequests())
     return api.get<SeatRequest[]>('/seat-requests/me')
   },
 
   requestSeat(rideId: string, requestedSeats: number): Promise<SeatRequest> {
-    if (isStaticDemo) {
+    if (isDemoExperience()) {
       const req: SeatRequest = {
         id: `demo-req-${Date.now()}`,
         rideId,
@@ -38,23 +38,26 @@ export const seatRequestService = {
   },
 
   accept(id: string): Promise<SeatRequest> {
-    if (isStaticDemo)
+    if (isDemoExperience())
       return Promise.resolve({ ...demoRequests()[0]!, id, status: 'confirmed' as const })
     return api.post<SeatRequest>(`/seat-requests/${id}/accept`, {})
   },
 
   reject(id: string): Promise<SeatRequest> {
-    if (isStaticDemo) return Promise.resolve({ ...demoRequests()[0]!, id, status: 'rejected' })
+    if (isDemoExperience())
+      return Promise.resolve({ ...demoRequests()[0]!, id, status: 'rejected' })
     return api.post<SeatRequest>(`/seat-requests/${id}/reject`, {})
   },
 
   cancel(id: string): Promise<SeatRequest> {
-    if (isStaticDemo) return Promise.resolve({ ...demoRequests()[0]!, id, status: 'cancelled' })
+    if (isDemoExperience())
+      return Promise.resolve({ ...demoRequests()[0]!, id, status: 'cancelled' })
     return api.post<SeatRequest>(`/seat-requests/${id}/cancel`, {})
   },
 
   confirm(id: string): Promise<SeatRequest> {
-    if (isStaticDemo) return Promise.resolve({ ...demoRequests()[0]!, id, status: 'confirmed' })
+    if (isDemoExperience())
+      return Promise.resolve({ ...demoRequests()[0]!, id, status: 'confirmed' })
     return api.post<SeatRequest>(`/seat-requests/${id}/confirm`, {})
   },
 }

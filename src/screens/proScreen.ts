@@ -2,6 +2,7 @@ import { renderButton } from '@/components/Button'
 import { renderChip, renderChipRow } from '@/components/Chip'
 import { mountTopBar } from '@/components/TopBar'
 import { showToast } from '@/components/toast'
+import { iconCheck } from '@/components/icons'
 import type { ScreenRenderContext } from '@/app/screenRegistry'
 
 let selectedPlan: 'monthly' | 'annual' = 'annual'
@@ -25,7 +26,7 @@ export function renderProScreen({ container }: ScreenRenderContext): void {
       </section>
 
       <section class="cm-card cm-card--pad">
-        ${BENEFITS.map((b) => `<div class="cm-pro-benefit"><div class="cm-pro-benefit__icon">✓</div><p class="cm-body">${b}</p></div>`).join('')}
+        ${BENEFITS.map((b) => `<div class="cm-pro-benefit"><div class="cm-pro-benefit__icon">${iconCheck()}</div><p class="cm-body">${b}</p></div>`).join('')}
       </section>
 
       ${renderChipRow(

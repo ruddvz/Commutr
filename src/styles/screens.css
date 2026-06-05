@@ -105,6 +105,12 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  color: var(--cm-brand);
+}
+
+.cm-pro-benefit__icon svg {
+  width: 18px;
+  height: 18px;
 }
 
 .cm-history-segment {
