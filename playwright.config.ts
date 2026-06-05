@@ -14,8 +14,9 @@ export default defineConfig({
     { name: 'iphone-14', use: { ...devices['iPhone 14'] } },
   ],
   webServer: {
-    command: 'pnpm run preview -- --port 3000',
-    port: 3000,
+    command: 'pnpm exec vite preview --port 4173 --strictPort --host 127.0.0.1',
+    url: 'http://127.0.0.1:4173/Commutr/',
+    timeout: 180_000,
     reuseExistingServer: !process.env['CI'],
   },
 })
