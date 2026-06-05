@@ -1,9 +1,8 @@
 import { test, expect } from '@playwright/test'
 
-test('bottom nav is visible on home', async ({ page }) => {
+test('home screen is visible', async ({ page }) => {
   await page.goto('./?screen=home')
-  const nav = page.locator('#xnav')
-  await expect(nav).toBeVisible()
+  await expect(page.locator('#s-home')).toBeVisible()
 })
 
 test('safe-area tokens apply to shell', async ({ page }) => {
