@@ -1,0 +1,72 @@
+.cm-display-xl {
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  margin: 0;
+}
+
+.cm-display-lg {
+  font-size: 28px;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  font-weight: 800;
+  margin: 0;
+}
+
+.cm-title-lg {
+  font-size: 22px;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  font-weight: 750;
+  margin: 0;
+}
+
+.cm-title-md {
+  font-size: 18px;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+  margin: 0;
+}
+
+.cm-body-lg {
+  font-size: 16px;
+  line-height: 1.45;
+  font-weight: 500;
+  margin: 0;
+}
+
+.cm-body {
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 500;
+  margin: 0;
+}
+
+.cm-caption {
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 500;
+  margin: 0;
+}
+
+.cm-micro {
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin: 0;
+}
+
+.cm-muted {
+  color: var(--cm-muted);
+}
+
+.cm-section-title {
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--cm-space-3);
+}

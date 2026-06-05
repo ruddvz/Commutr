@@ -1,0 +1,127 @@
+.cm-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--cm-space-3);
+  min-height: var(--cm-topbar-h);
+  padding: 8px var(--cm-mobile-pad);
+  background: rgba(251, 252, 250, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--cm-divider);
+}
+
+.cm-topbar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--cm-space-3);
+  min-width: 0;
+}
+
+.cm-topbar__title {
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cm-topbar__subtitle {
+  font-size: 13px;
+  color: var(--cm-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cm-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--cm-space-2);
+  flex-shrink: 0;
+}
+
+.cm-bottom-nav {
+  position: fixed;
+  left: max(12px, var(--safe-left));
+  right: max(12px, var(--safe-right));
+  bottom: max(10px, var(--safe-bottom));
+  z-index: 50;
+  height: 68px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  padding: 6px;
+  border: 1px solid rgba(198, 212, 203, 0.78);
+  border-radius: var(--cm-radius-pill);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--cm-shadow-float);
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+}
+
+.cm-tab {
+  height: 56px;
+  border: 0;
+  border-radius: var(--cm-radius-pill);
+  background: transparent;
+  color: var(--cm-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background var(--cm-transition),
+    color var(--cm-transition);
+}
+
+.cm-tab svg {
+  width: 20px;
+  height: 20px;
+}
+
+.cm-tab[aria-current='page'] {
+  color: var(--cm-brand-strong);
+  background: var(--cm-brand-soft);
+}
+
+.cm-tab--primary {
+  color: white;
+  background: var(--cm-brand);
+  box-shadow: 0 10px 22px rgba(31, 122, 77, 0.28);
+}
+
+.cm-tab--primary[aria-current='page'] {
+  color: white;
+  background: var(--cm-brand);
+}
+
+.cm-tab__badge {
+  position: absolute;
+  top: 6px;
+  right: calc(50% - 18px);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--cm-radius-pill);
+  background: var(--cm-danger);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cm-tab-wrap {
+  position: relative;
+}

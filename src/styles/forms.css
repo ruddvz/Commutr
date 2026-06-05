@@ -1,0 +1,111 @@
+.cm-field {
+  display: grid;
+  gap: 7px;
+}
+
+.cm-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cm-ink-2);
+}
+
+.cm-helper {
+  font-size: 12px;
+  color: var(--cm-muted);
+}
+
+.cm-input {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid var(--cm-line);
+  border-radius: 16px;
+  background: var(--cm-surface);
+  color: var(--cm-ink);
+  font: inherit;
+  font-size: 16px;
+  padding: 0 15px;
+  outline: none;
+  box-shadow: 0 1px 0 rgba(15, 44, 31, 0.03);
+}
+
+.cm-input:focus {
+  border-color: rgba(31, 122, 77, 0.7);
+  box-shadow: 0 0 0 4px rgba(31, 122, 77, 0.12);
+}
+
+.cm-input--error {
+  border-color: var(--cm-danger);
+}
+
+.cm-field-error {
+  font-size: 12px;
+  color: var(--cm-danger);
+  font-weight: 600;
+}
+
+.cm-textarea {
+  min-height: 96px;
+  padding: 12px 15px;
+  resize: vertical;
+}
+
+.cm-form-card {
+  padding: var(--cm-space-5);
+}
+
+.cm-password-wrap {
+  position: relative;
+}
+
+.cm-password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  min-height: 36px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  color: var(--cm-brand-strong);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cm-otp-row {
+  display: flex;
+  gap: var(--cm-space-2);
+  justify-content: center;
+}
+
+.cm-otp-input {
+  width: 48px;
+  height: 52px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  border: 1px solid var(--cm-line);
+  border-radius: 14px;
+  background: var(--cm-surface);
+}
+
+.cm-stepper {
+  display: flex;
+  gap: var(--cm-space-2);
+  margin-bottom: var(--cm-space-5);
+}
+
+.cm-stepper__dot {
+  flex: 1;
+  height: 4px;
+  border-radius: var(--cm-radius-pill);
+  background: var(--cm-line);
+}
+
+.cm-stepper__dot--active {
+  background: var(--cm-brand);
+}
+
+.cm-stepper__dot--done {
+  background: var(--cm-brand-soft);
+}

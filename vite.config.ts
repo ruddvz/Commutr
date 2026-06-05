@@ -30,8 +30,8 @@ export default defineConfig({
         short_name: 'COMMUTR',
         description:
           'Find intercity carpooling rides across Canada. Zero booking fees, direct driver chat, verified profiles, and safer ride coordination.',
-        theme_color: '#050607',
-        background_color: '#050607',
+        theme_color: '#1f7a4d',
+        background_color: '#f5f8f4',
         display: 'standalone',
         orientation: 'portrait-primary',
         lang: 'en-CA',
