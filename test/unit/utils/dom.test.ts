@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { JSDOM } from 'jsdom'
 
-// Set up a minimal DOM for DOM utils under jsdom (already set by vitest config)
+// DOM provided by vitest jsdom environment
 describe('byId', () => {
   beforeEach(() => {
     document.body.innerHTML = '<div id="foo">Hello</div>'

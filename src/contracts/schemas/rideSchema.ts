@@ -12,11 +12,11 @@ export const rideSchema = z.object({
 })
 
 export const searchSchema = z.object({
-  origin: z.string().min(2).max(100),
-  destination: z.string().min(2).max(100),
+  origin: z.string().min(2).max(100).optional(),
+  destination: z.string().min(2).max(100).optional(),
   date: z.string().optional(),
-  seats: z.number().int().min(1).max(8).optional(),
-  maxPrice: z.number().min(0).optional(),
+  seats: z.coerce.number().int().min(1).max(8).optional(),
+  maxPrice: z.coerce.number().min(0).optional(),
 })
 
 export type RideInput = z.infer<typeof rideSchema>

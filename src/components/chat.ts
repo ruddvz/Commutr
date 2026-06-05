@@ -1,13 +1,9 @@
 import { escapeHtml } from '@/utils/dom'
-import { showToast } from './toast'
-
-let currentChatTargetId: string | null = null
 
 /**
  * Set the chat context (which conversation is open).
  */
-export function openChat(userId: string): void {
-  currentChatTargetId = userId
+export function openChat(_userId: string): void {
   scrollChatToEnd()
 }
 

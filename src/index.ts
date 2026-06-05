@@ -10,7 +10,9 @@
 
 import './styles/main.css'
 
-import { go, updateNavState } from './utils/router'
+import { registerServiceWorker } from './utils/pwa'
+import { go, updateNavState, getInitialScreen, markOnboardingComplete } from './utils/router'
+import { authService } from './services/authService'
 import { bindScrollMorph, bindScrollAwareTabbars } from './components/navigation'
 import { showToast } from './components/toast'
 import { setStar, submitRating } from './components/starRating'
@@ -34,8 +36,13 @@ function obNext(): void {
     obIndex++
     updateOnboarding()
   } else {
-    go('home')
+    finishOnboarding()
   }
+}
+
+function finishOnboarding(): void {
+  markOnboardingComplete()
+  go('home')
 }
 
 // ─── Global function surface (for onclick= attributes in index.html) ────────
@@ -44,6 +51,8 @@ declare global {
   interface Window {
     go: typeof go
     obNext: typeof obNext
+    finishOnboarding: typeof finishOnboarding
+    obSkip: typeof finishOnboarding
     showOTP: typeof showOTP
     otpMove: typeof otpMove
     chipSel: typeof chipSel
@@ -59,6 +68,8 @@ declare global {
 
 window.go = go
 window.obNext = obNext
+window.finishOnboarding = finishOnboarding
+window.obSkip = finishOnboarding
 window.showOTP = showOTP
 window.otpMove = otpMove
 window.chipSel = chipSel
@@ -73,8 +84,14 @@ window.segSel = segSel
 // ─── Initialization ─────────────────────────────────────────────────────────
 function init(): void {
   updateOnboarding()
-  updateNavState('ob')
-  go('ob')
+  const initial = getInitialScreen()
+  updateNavState(initial)
+  go(initial)
+  if (authService.isAuthenticated()) {
+    void authService.fetchMe().catch(() => {
+      authService.logout()
+    })
+  }
   bindScrollMorph()
   bindScrollAwareTabbars()
   bindMessageButtons()
@@ -82,11 +99,4 @@ function init(): void {
 
 document.addEventListener('DOMContentLoaded', init)
 
-// ─── Service Worker registration ─────────────────────────────────────────────
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((err) => {
-      console.warn('SW registration failed:', err)
-    })
-  })
-}
+registerServiceWorker()

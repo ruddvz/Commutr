@@ -1,5 +1,3 @@
-import { byId } from '@/utils/dom'
-
 /**
  * Show the OTP (one-time password) input panel.
  */

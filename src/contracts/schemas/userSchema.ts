@@ -8,13 +8,19 @@ export const userSchema = z.object({
 })
 
 export const loginSchema = z.object({
-  email: z.string().email(),
+  email: z
+    .string()
+    .email()
+    .transform((e) => e.toLowerCase()),
   password: z.string().min(8),
 })
 
 export const registerSchema = z.object({
   name: z.string().min(2).max(60),
-  email: z.string().email(),
+  email: z
+    .string()
+    .email()
+    .transform((e) => e.toLowerCase()),
   password: z.string().min(8).max(72),
   phone: z.string().optional(),
 })

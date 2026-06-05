@@ -1,63 +1,105 @@
 import { Router } from 'express'
 import { requireAuth, type AuthRequest } from '../middleware/auth.js'
-import { validate } from '../middleware/validate.js'
+import { validateBody, validateQuery } from '../middleware/validate.js'
 import { AppError } from '../middleware/errorHandler.js'
 import { rideSchema, searchSchema } from '../../src/contracts/schemas/rideSchema.js'
-import type { Ride } from '../../src/contracts/types/Ride.js'
+import { rideRepository } from '../repositories/rideRepository.js'
+import { prisma } from '../db/client.js'
+import { createSeatRequestSchema } from '../../src/contracts/schemas/seatRequestSchema.js'
+import { createSeatRequestForRide } from './seatRequests.js'
 
 export const ridesRouter = Router()
 
-// In-memory ride store — replace with a DB layer in production
-const rides = new Map<string, Ride>()
+const FREE_POSTS_PER_MONTH = 3
 
-ridesRouter.get('/', validate(searchSchema.partial()), (req, res) => {
-  const { origin, destination, date, seats, maxPrice } = req.query as Record<string, string>
-  let results = [...rides.values()].filter((r) => r.status === 'active')
-
-  if (origin) results = results.filter((r) => r.origin.toLowerCase().includes(origin.toLowerCase()))
-  if (destination) results = results.filter((r) => r.destination.toLowerCase().includes(destination.toLowerCase()))
-  if (date) results = results.filter((r) => r.departureAt.startsWith(date))
-  if (seats) results = results.filter((r) => r.seatsAvailable >= parseInt(seats, 10))
-  if (maxPrice) results = results.filter((r) => r.pricePerSeat <= parseFloat(maxPrice))
-
-  res.json(results)
+ridesRouter.get('/', validateQuery(searchSchema), async (req: AuthRequest, res, next) => {
+  try {
+    const query = (req.validatedQuery ?? {}) as {
+      origin?: string
+      destination?: string
+      date?: string
+      seats?: number
+      maxPrice?: number
+    }
+    const results = await rideRepository.search(query)
+    res.json({ data: results })
+  } catch (err) {
+    next(err)
+  }
 })
 
-ridesRouter.get('/:id', (req, res, next) => {
-  const ride = rides.get(req.params['id'] ?? '')
-  if (!ride) {
-    next(new AppError(404, 'Ride not found'))
-    return
+ridesRouter.get('/:id', async (req, res, next) => {
+  try {
+    const ride = await rideRepository.findById(req.params['id'] ?? '')
+    if (!ride) {
+      throw new AppError(404, 'Ride not found', 'RIDE_NOT_FOUND')
+    }
+    res.json({ data: ride })
+  } catch (err) {
+    next(err)
   }
-  res.json(ride)
 })
 
-ridesRouter.post('/', requireAuth, validate(rideSchema), (req: AuthRequest, res) => {
-  const id = crypto.randomUUID()
-  const ride: Ride = {
-    id,
-    driverId: req.userId!,
-    driverName: 'Driver',
-    driverVerified: false,
-    driverRating: 0,
-    ...req.body,
-    status: 'active',
-    createdAt: new Date().toISOString(),
-  }
-  rides.set(id, ride)
-  res.status(201).json(ride)
-})
+ridesRouter.post(
+  '/',
+  requireAuth,
+  validateBody(rideSchema),
+  async (req: AuthRequest, res, next) => {
+    try {
+      const userId = req.userId!
+      const subscription = await prisma.subscription.findUnique({ where: { userId } })
+      const plan = subscription?.plan ?? 'free'
 
-ridesRouter.delete('/:id', requireAuth, (req: AuthRequest, res, next) => {
-  const ride = rides.get(req.params['id'] ?? '')
-  if (!ride) {
-    next(new AppError(404, 'Ride not found'))
-    return
+      if (plan === 'free') {
+        const postsThisMonth = await rideRepository.countPostsThisMonth(userId)
+        if (postsThisMonth >= FREE_POSTS_PER_MONTH) {
+          throw new AppError(
+            403,
+            'Free plan allows 3 ride posts per month. Upgrade to Pro for unlimited posts.',
+            'FORBIDDEN',
+          )
+        }
+      }
+
+      const ride = await rideRepository.create(userId, req.body)
+      res.status(201).json({ data: ride })
+    } catch (err) {
+      next(err)
+    }
+  },
+)
+
+ridesRouter.post(
+  '/:id/seat-requests',
+  requireAuth,
+  validateBody(createSeatRequestSchema),
+  async (req: AuthRequest, res, next) => {
+    try {
+      const { requestedSeats } = req.body as { requestedSeats: number }
+      const request = await createSeatRequestForRide(
+        req.params['id'] ?? '',
+        req.userId!,
+        requestedSeats,
+      )
+      res.status(201).json({ data: request })
+    } catch (err) {
+      next(err)
+    }
+  },
+)
+
+ridesRouter.delete('/:id', requireAuth, async (req: AuthRequest, res, next) => {
+  try {
+    const ride = await rideRepository.findById(req.params['id'] ?? '')
+    if (!ride) {
+      throw new AppError(404, 'Ride not found', 'RIDE_NOT_FOUND')
+    }
+    if (ride.driverId !== req.userId) {
+      throw new AppError(403, 'Forbidden', 'FORBIDDEN')
+    }
+    await rideRepository.delete(ride.id)
+    res.status(204).send()
+  } catch (err) {
+    next(err)
   }
-  if (ride.driverId !== req.userId) {
-    next(new AppError(403, 'Forbidden'))
-    return
-  }
-  rides.delete(ride.id)
-  res.status(204).send()
 })

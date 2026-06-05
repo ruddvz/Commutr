@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { rideSchema, searchSchema } from '@/contracts/schemas/rideSchema'
+import { rideSchema } from '@/contracts/schemas/rideSchema'
 import { registerSchema, loginSchema } from '@/contracts/schemas/userSchema'
 
 describe('rideSchema', () => {
@@ -54,8 +54,6 @@ describe('registerSchema', () => {
 
 describe('loginSchema', () => {
   it('accepts valid credentials', () => {
-    expect(
-      loginSchema.safeParse({ email: 'a@b.com', password: 'password123' }).success,
-    ).toBe(true)
+    expect(loginSchema.safeParse({ email: 'a@b.com', password: 'password123' }).success).toBe(true)
   })
 })

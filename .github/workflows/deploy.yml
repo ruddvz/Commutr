@@ -1,8 +1,8 @@
-name: Deploy static content to Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main", "master"]
+    branches: [main, master]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 jobs:
@@ -20,33 +20,47 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v2
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
         with:
-          version: 8
-      - name: Set up Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: 'pnpm'
+          node-version: 20
+          cache: pnpm
+
       - name: Install dependencies
-        run: pnpm install
-      - name: Build
-        run: pnpm run build
-      - name: Copy public assets manually
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm exec prisma generate
+
+      - name: Quality gate
         run: |
-          cp -r icons dist/client/ 2>/dev/null || true
-          cp manifest.json dist/client/ 2>/dev/null || true
-          cp sw.js dist/client/ 2>/dev/null || true
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+          pnpm typecheck
+          pnpm lint:check
+          pnpm format:check
+          pnpm test
+        env:
+          NODE_ENV: test
+          JWT_SECRET: test-jwt-secret-at-least-32-characters-long
+          DATABASE_URL: file:./test.db
+
+      - name: Build
+        run: pnpm build
+        env:
+          NODE_ENV: production
+          JWT_SECRET: deploy-build-jwt-secret-at-least-32-chars
+          DATABASE_URL: file:./data/commutr.db
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist/client'
+          path: ./dist/client
+
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4

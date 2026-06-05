@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatDate, formatTime, formatCAD, formatDuration } from '@/utils/format'
+import { formatCAD, formatDuration } from '@/utils/format'
 
 describe('formatCAD', () => {
   it('formats whole-dollar amounts without cents', () => {
