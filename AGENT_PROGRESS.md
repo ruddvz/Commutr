@@ -49,6 +49,12 @@
 - `pnpm test`
 - `pnpm build`
 
+### Follow-up commit — P1 UX wiring
+
+- Versioned onboarding completion (`commutr_onboarding_v1`) — skip/next persist; no repeat on reload
+- `authService.fetchMe()` on init; `seatRequestService` frontend wrapper
+- `POST /api/reports` moderation endpoint (stored in DB)
+
 ### Remaining (P1/P2 backlog)
 
 - [ ] Full React/vanilla screen modularization (remove `onclick` globals)

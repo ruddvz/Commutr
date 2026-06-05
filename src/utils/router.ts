@@ -55,6 +55,29 @@ export function updateNavState(target: ScreenId): void {
   })
 }
 
+const ONBOARDING_KEY = 'commutr_onboarding_v1'
+
+export function hasCompletedOnboarding(): boolean {
+  try {
+    return localStorage.getItem(ONBOARDING_KEY) === 'done'
+  } catch {
+    return false
+  }
+}
+
+export function markOnboardingComplete(): void {
+  try {
+    localStorage.setItem(ONBOARDING_KEY, 'done')
+  } catch {
+    // ignore quota errors
+  }
+}
+
+export function getInitialScreen(): ScreenId {
+  if (!hasCompletedOnboarding()) return 'ob'
+  return 'home'
+}
+
 export function go(target: ScreenId): void {
   closeTransientUi()
 

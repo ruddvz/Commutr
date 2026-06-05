@@ -10,6 +10,7 @@ import { authRouter } from './routes/auth.js'
 import { ridesRouter } from './routes/rides.js'
 import { chatRouter } from './routes/chat.js'
 import { seatRequestsRouter } from './routes/seatRequests.js'
+import { reportsRouter } from './routes/reports.js'
 import { errorHandler } from './middleware/errorHandler.js'
 
 const app = express()
@@ -50,6 +51,7 @@ app.use('/api/auth', authRouter)
 app.use('/api/rides', ridesRouter)
 app.use('/api/chat', chatRouter)
 app.use('/api/seat-requests', seatRequestsRouter)
+app.use('/api/reports', reportsRouter)
 
 app.get('/api/health', (_req, res) => {
   res.json({ data: { status: 'ok', timestamp: new Date().toISOString() } })

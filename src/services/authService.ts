@@ -1,5 +1,5 @@
 import { api } from './api'
-import type { AuthUser } from '@/contracts/types/User'
+import type { AuthUser, User } from '@/contracts/types/User'
 import type { RegisterInput, LoginInput } from '@/contracts/schemas/userSchema'
 
 export const authService = {
@@ -15,8 +15,13 @@ export const authService = {
     return user
   },
 
+  async fetchMe(): Promise<User> {
+    return api.get<User>('/auth/me')
+  },
+
   async logout(): Promise<void> {
     localStorage.removeItem('commutr_token')
+    await api.post<{ ok: boolean }>('/auth/logout', {}).catch(() => undefined)
   },
 
   isAuthenticated(): boolean {
