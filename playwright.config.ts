@@ -6,7 +6,7 @@ export default defineConfig({
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 1 : 0,
   use: {
-    baseURL: 'http://localhost:3000/Commutr/',
+    baseURL: 'http://127.0.0.1:4173/Commutr/',
     trace: 'on-first-retry',
   },
   projects: [
