@@ -4,20 +4,27 @@
 
 import './styles/main.css'
 
-import { registerServiceWorker } from './utils/pwa'
-import { go, getInitialScreen, updateNavState } from './utils/router'
+import { registerServiceWorker, initPwaUpdateToast } from './utils/pwa'
+import { go, getInitialScreen, updateNavState, markOnboardingComplete } from './utils/router'
 import { bindGlobalDelegation } from './app/delegation'
 import { initOnboarding } from './screens/onboardingScreen'
 import { registerAllScreens } from './app/registerScreens'
 import { initAppShell } from './components/AppShell'
+import { initErrorBoundary } from './components/ErrorBoundary'
 import { authService } from './services/authService'
 import { appStore } from './app/store'
 import { bindMessageButtons } from './components/chat'
 import { mountOfflineBanner } from './components/uiStates'
+import { runtimeMode } from './config/runtime'
 
 function init(): void {
-  document.documentElement.setAttribute('data-theme', 'system')
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (import.meta.env.DEV) {
+    // eslint-disable-next-line no-console -- dev runtime mode indicator
+    console.info('[Commutr] runtime mode:', runtimeMode)
+  }
 
+  initErrorBoundary()
   initAppShell()
   registerAllScreens()
   bindGlobalDelegation()
@@ -26,9 +33,21 @@ function init(): void {
 
   const initial = getInitialScreen()
   updateNavState(initial)
+
+  if (!authService.isAuthenticated()) {
+    const guest = authService.continueAsGuest()
+    appStore.setUser({
+      id: guest.id,
+      name: guest.name,
+      email: guest.email,
+      verified: guest.verified,
+    })
+    markOnboardingComplete()
+  }
+
   go(initial)
 
-  if (authService.isAuthenticated()) {
+  if (authService.isAuthenticated() && !authService.isDemoGuest()) {
     void authService
       .fetchMe()
       .then((user) => {
@@ -52,3 +71,4 @@ function init(): void {
 
 document.addEventListener('DOMContentLoaded', init)
 registerServiceWorker()
+initPwaUpdateToast()

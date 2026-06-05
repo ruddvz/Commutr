@@ -8,10 +8,16 @@ export function renderButton(
     go?: string
     id?: string
     disabled?: boolean
+    size?: 'sm' | 'md'
   } = {},
 ): string {
   const variant = opts.variant ?? 'primary'
-  const classes = ['cm-button', `cm-button--${variant}`, opts.block ? 'cm-button--block' : '']
+  const classes = [
+    'cm-button',
+    `cm-button--${variant}`,
+    opts.block ? 'cm-button--block' : '',
+    opts.size === 'sm' ? 'cm-button--sm' : '',
+  ]
     .filter(Boolean)
     .join(' ')
   const attrs = [

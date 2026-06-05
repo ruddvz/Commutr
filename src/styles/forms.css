@@ -29,8 +29,24 @@
 }
 
 .cm-input:focus {
-  border-color: rgba(31, 122, 77, 0.7);
-  box-shadow: 0 0 0 4px rgba(31, 122, 77, 0.12);
+  border-color: rgba(32, 138, 83, 0.7);
+  box-shadow: 0 0 0 4px rgba(32, 138, 83, 0.12);
+}
+
+.cm-input--dark {
+  min-height: 58px;
+  border-radius: 22px;
+  background: #0a1d14;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: white;
+  font-size: 18px;
+  font-weight: 750;
+  padding: 0 18px;
+}
+
+.cm-label--on-glass {
+  color: #5a6d62;
+  font-weight: 750;
 }
 
 .cm-input--error {

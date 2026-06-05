@@ -1,4 +1,4 @@
-import { rideService } from '@/services/rideService'
+import { searchRides } from '@/services/rideService'
 import { appStore } from '@/app/store'
 import { go } from '@/utils/router'
 import { renderButton } from '@/components/Button'
@@ -7,9 +7,10 @@ import { renderChip, renderChipRow } from '@/components/Chip'
 import { openBottomSheet, closeBottomSheet } from '@/components/BottomSheet'
 import { mountTopBar } from '@/components/TopBar'
 import { bindRideCardClicks, mountRideCards } from '@/components/RideCard'
-import { showEmpty, showError, showLoading } from '@/components/uiStates'
+import { showEmpty, showLoading } from '@/components/uiStates'
 import type { ScreenRenderContext } from '@/app/screenRegistry'
 import type { Ride } from '@/contracts/types/Ride'
+import { iconFilter } from '@/components/icons'
 import { escapeHtml } from '@/utils/dom'
 
 let lastSearch: { origin?: string; destination?: string; date?: string; seats?: number } = {}
@@ -30,7 +31,7 @@ export function renderSearchScreen({ container }: ScreenRenderContext): void {
     title: 'Search rides',
     showBack: true,
     backGo: 'home',
-    actions: `<button type="button" class="cm-icon-button" data-action="open-filters" aria-label="Filters">☰</button>`,
+    actions: `<button type="button" class="cm-icon-button" data-action="open-filters" aria-label="Filters">${iconFilter()}</button>`,
   })
 
   const today = new Date().toISOString().slice(0, 10)
@@ -189,21 +190,33 @@ export async function runSearch(container?: HTMLElement): Promise<void> {
 
   showLoading(results, 'Searching rides…')
 
-  try {
-    const rides = await rideService.search({
-      origin: lastSearch.origin,
-      destination: lastSearch.destination,
-      date: lastSearch.date,
-      seats: lastSearch.seats,
-    })
-    const sorted = sortRides(rides)
-    if (count) count.textContent = `${sorted.length} ride${sorted.length === 1 ? '' : 's'} found`
-    renderResults(results, sorted)
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Search failed'
-    if (count) count.textContent = 'Search failed'
-    showError(results, message)
+  const result = await searchRides({
+    origin: lastSearch.origin,
+    destination: lastSearch.destination,
+    date: lastSearch.date,
+    seats: lastSearch.seats,
+    verifiedOnly: filterVerified,
+  })
+
+  const sorted = sortRides(result.rides)
+  if (count) {
+    count.textContent =
+      result.status === 'empty'
+        ? '0 rides found'
+        : `${sorted.length} ride${sorted.length === 1 ? '' : 's'} found`
   }
+
+  if (result.status === 'cached' || result.status === 'demo') {
+    results.insertAdjacentHTML(
+      'afterbegin',
+      `<div class="cm-reconnect-notice" role="status">
+        <p class="cm-reconnect-notice__title">Live rides unavailable</p>
+        <p class="cm-caption cm-muted">Showing saved or sample rides. Try again when you're connected.</p>
+      </div>`,
+    )
+  }
+
+  renderResults(results, sorted)
 }
 
 function renderResults(container: HTMLElement, rides: Ride[]): void {

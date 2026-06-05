@@ -52,7 +52,7 @@ export function renderOnboardingScreen({ container }: ScreenRenderContext): void
       <div class="cm-stack">
         ${renderButton(obIndex < SLIDES.length - 1 ? 'Continue' : 'Create free account', { variant: 'primary', block: true, action: 'ob-next', go: 'signup' })}
         ${renderButton('Sign in', { variant: 'secondary', block: true, go: 'signup' })}
-        ${renderButton('Continue browsing rides', { variant: 'tertiary', block: true, action: 'ob-finish' })}
+        ${renderButton('Continue as guest', { variant: 'secondary', block: true, action: 'guest-browse' })}
         ${renderButton('Skip', { variant: 'tertiary', block: true, action: 'ob-finish' })}
       </div>
     </div>`

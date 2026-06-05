@@ -8,9 +8,11 @@ import { addEmoji, sendMsg } from '@/components/chat'
 import { finishOnboardingFlow, obNextStep } from '@/screens/onboardingScreen'
 import { handleSignupSubmit, handleLoginSubmit } from '@/screens/authScreen'
 import { runSearch, retryLastSearch } from '@/screens/searchScreen'
+import { reloadHomeRides } from '@/screens/homeScreen'
 import { submitPostRide } from '@/screens/postRideScreen'
 import { requestSeatOnDetail } from '@/screens/rideDetailScreen'
 import { appStore } from '@/app/store'
+import { authService } from '@/services/authService'
 
 function closestAction(el: EventTarget | null): HTMLElement | null {
   if (!(el instanceof Element)) return null
@@ -46,6 +48,17 @@ export function bindGlobalDelegation(): void {
       case 'ob-finish':
         finishOnboardingFlow()
         break
+      case 'guest-browse': {
+        const guest = authService.continueAsGuest()
+        appStore.setUser({
+          id: guest.id,
+          name: guest.name,
+          email: guest.email,
+          verified: guest.verified,
+        })
+        finishOnboardingFlow()
+        break
+      }
       case 'show-otp':
         showOTP()
         break
@@ -64,6 +77,9 @@ export function bindGlobalDelegation(): void {
       case 'retry-last':
         void retryLastSearch()
         break
+      case 'retry-home-rides':
+        void reloadHomeRides()
+        break
       case 'post-submit':
         void submitPostRide()
         break
@@ -72,6 +88,16 @@ export function bindGlobalDelegation(): void {
         break
       case 'request-seat':
         void requestSeatOnDetail()
+        break
+      case 'share-ride':
+        {
+          const text = 'Check out this ride on Commutr'
+          if (navigator.share) {
+            void navigator.share({ title: 'Commutr ride', text }).catch(() => undefined)
+          } else {
+            void navigator.clipboard.writeText(text).then(() => showToast('Link copied'))
+          }
+        }
         break
       case 'open-ride':
         {

@@ -35,11 +35,38 @@ function actionLabel(action: RideCardAction): string {
 }
 
 export function renderRideCard(props: RideCardProps): string {
-  const { ride, primaryAction = 'details' } = props
-  const rating =
-    ride.driverRating > 0
-      ? `★ ${ride.driverRating.toFixed(1)} · ${ride.driverRating >= 4.5 ? '142' : '0'} trips`
-      : 'New driver'
+  const { ride, primaryAction = 'details', compact, context = 'search' } = props
+  const isCompact = compact ?? context === 'home'
+  const rating = ride.driverRating > 0 ? `${ride.driverRating.toFixed(1)} · Verified` : 'New driver'
+
+  if (isCompact) {
+    const time = new Date(ride.departureAt).toLocaleTimeString('en-CA', {
+      hour: 'numeric',
+      minute: '2-digit',
+    })
+    const pickup = ride.stops[0] ?? ride.origin
+    const dropoff = ride.stops[1] ?? ride.destination
+    return `
+    <article class="cm-card cm-ride-card cm-ride-card--compact" data-ride-id="${escapeHtml(ride.id)}" data-action="open-ride" tabindex="0">
+      <div class="cm-ride-card__compact-top">
+        <span class="cm-caption">${escapeHtml(time)}</span>
+        <span class="cm-ride-card__route">${escapeHtml(ride.origin.split(',')[0] ?? ride.origin)} → ${escapeHtml(ride.destination.split(',')[0] ?? ride.destination)}</span>
+        <span class="cm-ride-card__price">${escapeHtml(formatCAD(ride.pricePerSeat))}</span>
+      </div>
+      <div class="cm-ride-card__driver cm-mt-2">
+        ${renderAvatar(ride.driverName)}
+        <div>
+          <div class="cm-body" style="font-weight:750">${escapeHtml(ride.driverName)} · ${escapeHtml(rating)}</div>
+          <div class="cm-caption cm-muted">${escapeHtml(pickup)} → ${escapeHtml(dropoff)}</div>
+          <div class="cm-caption cm-muted">${escapeHtml(seatsLabel(ride.seatsAvailable))}${ride.notes ? ` · ${escapeHtml(ride.notes.split('·')[0]?.trim() ?? '')}` : ''}</div>
+        </div>
+      </div>
+      <div class="cm-ride-card__actions">
+        ${renderButton('Request seat', { variant: 'primary', action: 'open-ride' })}
+        ${renderButton('Details', { variant: 'secondary', action: 'open-ride' })}
+      </div>
+    </article>`
+  }
 
   const badges = [
     renderBadge(seatsLabel(ride.seatsAvailable), 'brand'),

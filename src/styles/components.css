@@ -1,5 +1,5 @@
 .cm-button {
-  min-height: 48px;
+  min-height: 56px;
   border: 0;
   border-radius: var(--cm-radius-pill);
   padding: 0 18px;
@@ -57,6 +57,12 @@
 
 .cm-button--block {
   width: 100%;
+}
+
+.cm-button--sm {
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 13px;
 }
 
 .cm-icon-button {
@@ -146,12 +152,12 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 36px;
-  padding: 0 14px;
+  min-height: 44px;
+  padding: 0 16px;
   border-radius: var(--cm-radius-pill);
-  border: 1px solid var(--cm-line);
-  background: var(--cm-surface);
-  color: var(--cm-ink-2);
+  border: 1px solid rgba(32, 138, 83, 0.2);
+  background: var(--cm-surface-mint);
+  color: #126b3e;
   font-size: 13px;
   font-weight: 650;
   cursor: pointer;
@@ -162,9 +168,9 @@
 
 .cm-chip[aria-pressed='true'],
 .cm-chip--active {
-  background: var(--cm-brand-soft);
-  border-color: rgba(31, 122, 77, 0.35);
-  color: var(--cm-brand-strong);
+  background: var(--cm-primary-strong);
+  border-color: rgba(32, 138, 83, 0.34);
+  color: white;
 }
 
 .cm-chip-row {

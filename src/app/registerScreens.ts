@@ -14,6 +14,7 @@ import { renderTripHistoryScreen } from '@/screens/tripHistoryScreen'
 import { renderSettingsScreen } from '@/screens/settingsScreen'
 import { renderSafetyScreen } from '@/screens/safetyScreen'
 import { renderProScreen } from '@/screens/proScreen'
+import { renderNotFoundScreen } from '@/screens/notFoundScreen'
 
 export function registerAllScreens(): void {
   registerScreen({ id: 'ob', render: renderOnboardingScreen })
@@ -31,4 +32,5 @@ export function registerAllScreens(): void {
   registerScreen({ id: 'settings', render: renderSettingsScreen, authRequired: true })
   registerScreen({ id: 'sos', render: renderSafetyScreen })
   registerScreen({ id: 'sub', render: renderProScreen, authRequired: true })
+  registerScreen({ id: 'notfound', render: renderNotFoundScreen })
 }

@@ -17,6 +17,7 @@ export const searchSchema = z.object({
   date: z.string().optional(),
   seats: z.coerce.number().int().min(1).max(8).optional(),
   maxPrice: z.coerce.number().min(0).optional(),
+  verifiedOnly: z.coerce.boolean().optional(),
 })
 
 export type RideInput = z.infer<typeof rideSchema>

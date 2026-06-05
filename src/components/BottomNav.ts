@@ -1,20 +1,30 @@
 import type { ScreenId } from '@/utils/router'
+import {
+  iconHome,
+  iconMessages,
+  iconPlus,
+  iconProfile,
+  iconSearch,
+  iconBell,
+  iconSettings,
+} from './icons'
 
-const TABS: Array<{ id: ScreenId; label: string; icon: string; primary?: boolean }> = [
-  { id: 'home', label: 'Home', icon: '⌂' },
-  { id: 'search', label: 'Search', icon: '⌕' },
-  { id: 'post', label: 'Post', icon: '+', primary: true },
-  { id: 'inbox', label: 'Messages', icon: '💬' },
-  { id: 'profile', label: 'Profile', icon: '👤' },
+const TABS: Array<{ id: ScreenId; label: string; icon: () => string; primary?: boolean }> = [
+  { id: 'home', label: 'Home', icon: iconHome },
+  { id: 'search', label: 'Search', icon: iconSearch },
+  { id: 'post', label: 'Post', icon: iconPlus, primary: true },
+  { id: 'inbox', label: 'Messages', icon: iconMessages },
+  { id: 'profile', label: 'Profile', icon: iconProfile },
 ]
 
 function tabButton(tab: (typeof TABS)[number], active: ScreenId): string {
   const isActive = tab.id === active
   const cls = tab.primary ? 'cm-tab cm-tab--primary' : 'cm-tab'
+  const wrapCls = tab.primary ? 'cm-tab-wrap cm-tab-wrap--primary' : 'cm-tab-wrap'
   return `
-    <div class="cm-tab-wrap">
-      <button type="button" class="${cls}" data-go="${tab.id}" aria-current="${isActive ? 'page' : 'false'}">
-        <span aria-hidden="true">${tab.icon}</span>
+    <div class="${wrapCls}">
+      <button type="button" class="${cls}" data-go="${tab.id}" role="tab" aria-current="${isActive ? 'page' : 'false'}">
+        ${tab.icon()}
         <span>${tab.label}</span>
       </button>
     </div>`
@@ -42,11 +52,11 @@ export function renderDesktopNav(active: ScreenId): string {
     .join('')
   return `
     <nav class="cm-desktop-nav" aria-label="Desktop">
-      <button type="button" class="cm-title-md" data-go="home" style="border:0;background:transparent;cursor:pointer;color:var(--cm-brand-strong)">COMMUTR</button>
+      <button type="button" class="cm-title-md" data-go="home" style="border:0;background:transparent;cursor:pointer;color:var(--cm-ink)">Commutr</button>
       <div class="cm-desktop-nav__links">${links}</div>
       <div class="cm-row">
-        <button type="button" class="cm-icon-button" data-go="notifs" aria-label="Notifications">🔔</button>
-        <button type="button" class="cm-avatar" data-go="profile" aria-label="Profile">RK</button>
+        <button type="button" class="cm-icon-button" data-go="notifs" aria-label="Notifications">${iconBell()}</button>
+        <button type="button" class="cm-icon-button" data-go="settings" aria-label="Settings">${iconSettings()}</button>
       </div>
     </nav>`
 }
@@ -64,3 +74,5 @@ export function mountDesktopNav(active: ScreenId): void {
     el.outerHTML = renderDesktopNav(active)
   }
 }
+
+export { iconBell }

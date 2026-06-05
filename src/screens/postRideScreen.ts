@@ -1,5 +1,7 @@
 import { rideService } from '@/services/rideService'
 import { authService } from '@/services/authService'
+import { isStaticDemo } from '@/config/runtime'
+import { appStore } from '@/app/store'
 import { go } from '@/utils/router'
 import { showToast } from '@/components/toast'
 import { renderButton } from '@/components/Button'
@@ -48,6 +50,8 @@ const defaultDraft = (): PostDraft => ({
 
 let stepIndex = 0
 let draft: PostDraft = defaultDraft()
+let showSuccess = false
+let lastPostedRide: Ride | null = null
 
 function stepperHtml(): string {
   return `<div class="cm-stepper" aria-hidden="true">${STEPS.map((_, i) => {
@@ -170,6 +174,11 @@ function previewRide(): Ride {
 }
 
 export function renderPostRideScreen({ container }: ScreenRenderContext): void {
+  if (showSuccess && lastPostedRide) {
+    renderPostSuccessScreen({ container }, lastPostedRide)
+    return
+  }
+
   mountTopBar({
     title: 'Post a ride',
     subtitle: `Step ${stepIndex + 1} of ${STEPS.length} · ${STEPS[stepIndex]}`,
@@ -255,7 +264,7 @@ function updatePriceGuardrail(): void {
 
 export async function submitPostRide(): Promise<void> {
   readDraftFromDom()
-  if (!authService.isAuthenticated()) {
+  if (!authService.isAuthenticated() && !isStaticDemo) {
     showToast('Sign in to post a ride')
     go('signup')
     return
@@ -279,25 +288,81 @@ export async function submitPostRide(): Promise<void> {
 
   try {
     const isoDeparture = new Date(`${draft.date}T${draft.time}`).toISOString()
-    await rideService.create({
+    const ride = await rideService.create({
       origin: draft.origin,
       destination: draft.destination,
       departureAt: isoDeparture,
       pricePerSeat: draft.pricePerSeat,
       seatsTotal: draft.seatsTotal,
-      stops: draft.pickupSpot ? [draft.pickupSpot] : [],
+      stops: draft.pickupSpot ? [draft.pickupSpot, draft.dropoffSpot].filter(Boolean) : [],
+      notes: draft.pickupSpot ? `${draft.pickupSpot} → ${draft.dropoffSpot}` : undefined,
       amenities: draft.preferences,
     })
-    showToast('Ride published')
+    lastPostedRide = ride
+    showSuccess = true
     stepIndex = 0
     draft = defaultDraft()
-    go('dashboard')
+    const el = document.getElementById('appScreen')
+    if (el) renderPostRideScreen({ container: el })
   } catch (err) {
     showToast(err instanceof Error ? err.message : 'Could not post ride')
   }
 }
 
+function renderPostSuccessScreen({ container }: ScreenRenderContext, ride: Ride): void {
+  mountTopBar({ title: 'Ride posted', showBack: true, backGo: 'home' })
+  const when = new Date(ride.departureAt).toLocaleString('en-CA', {
+    weekday: 'short',
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+
+  container.className = 'cm-screen'
+  container.innerHTML = `
+    <div class="cm-card cm-reconnect-card cm-stack">
+      <p class="cm-reconnect-card__title">Ride posted</p>
+      <p class="cm-title-md cm-mt-2">${escapeHtml(ride.origin.split(',')[0] ?? ride.origin)} → ${escapeHtml(ride.destination.split(',')[0] ?? ride.destination)}</p>
+      <p class="cm-body cm-muted">${escapeHtml(when)} · ${ride.seatsTotal} seats · ${escapeHtml(formatPrice(ride.pricePerSeat))}</p>
+      <div class="cm-stack cm-mt-4">
+        ${renderButton('View on dashboard', { variant: 'primary', block: true, go: 'dashboard' })}
+        ${renderButton('Share ride', { variant: 'secondary', block: true, action: 'share-posted-ride' })}
+        ${renderButton('Post another', { variant: 'tertiary', block: true, action: 'post-another' })}
+      </div>
+    </div>`
+
+  container.querySelector('[data-action="post-another"]')?.addEventListener('click', () => {
+    showSuccess = false
+    lastPostedRide = null
+    renderPostRideScreen({ container })
+  })
+
+  container.querySelector('[data-action="share-posted-ride"]')?.addEventListener('click', () => {
+    const text = `${ride.origin} → ${ride.destination} on Commutr`
+    if (navigator.share) {
+      void navigator
+        .share({ title: 'Commutr ride', text })
+        .catch(() => showToast('Share cancelled'))
+    } else {
+      void navigator.clipboard.writeText(text).then(() => showToast('Route copied to clipboard'))
+    }
+  })
+
+  appStore.setSelectedRideId(ride.id)
+}
+
+function formatPrice(n: number): string {
+  return `$${Number.isInteger(n) ? n : n.toFixed(2)}`
+}
+
+function escapeHtml(text: string): string {
+  const el = document.createElement('span')
+  el.textContent = text
+  return el.innerHTML
+}
+
 export function resetPostFlow(): void {
   stepIndex = 0
   draft = defaultDraft()
+  showSuccess = false
+  lastPostedRide = null
 }
