@@ -1,6 +1,7 @@
-import { byId, qsa, screenElement } from './dom'
-import { loadRideDetail } from '@/screens/rideDetailScreen'
-import { initSearchScreen } from '@/screens/searchScreen'
+import { byId, qsa } from './dom'
+import { getScreenModule } from '@/app/screenRegistry'
+import { updateShellNav, screenContainer } from '@/components/AppShell'
+import { closeBottomSheet } from '@/components/BottomSheet'
 
 export const SCREEN_IDS = [
   'ob',
@@ -24,12 +25,7 @@ export type ScreenId = (typeof SCREEN_IDS)[number]
 
 let currentScreen: ScreenId = 'ob'
 
-const screenHooks: Partial<Record<ScreenId, () => void>> = {
-  search: () => initSearchScreen(),
-  detail: () => {
-    void loadRideDetail()
-  },
-}
+const ONBOARDING_KEY = 'commutr_onboarding_v1'
 
 export function getCurrentScreen(): ScreenId {
   return currentScreen
@@ -49,34 +45,14 @@ function syncUrl(target: ScreenId): void {
 }
 
 export function closeTransientUi(): void {
+  closeBottomSheet()
   qsa('.dropdown.open').forEach((el) => el.classList.remove('open'))
   qsa('[data-modal]').forEach((el) => ((el as HTMLElement).style.display = 'none'))
 }
 
 export function updateNavState(target: ScreenId): void {
-  const mainNav = document.getElementById('xnav')
-  const desktnav = document.getElementById('desktnav')
-  const noNavScreens: ScreenId[] = ['ob', 'signup', 'sos']
-
-  if (mainNav) {
-    mainNav.style.display = noNavScreens.includes(target) ? 'none' : ''
-  }
-  if (desktnav) {
-    desktnav.style.display = noNavScreens.includes(target) ? 'none' : ''
-  }
-
-  qsa<HTMLElement>('[data-go]', mainNav ?? document).forEach((link) => {
-    const linkTarget = link.dataset['go'] as ScreenId
-    link.classList.toggle('active', linkTarget === target)
-    link.setAttribute('aria-current', linkTarget === target ? 'page' : 'false')
-  })
-  qsa<HTMLElement>('[data-go]', desktnav ?? document).forEach((link) => {
-    const linkTarget = link.dataset['go'] as ScreenId
-    link.classList.toggle('active', linkTarget === target)
-  })
+  updateShellNav(target)
 }
-
-const ONBOARDING_KEY = 'commutr_onboarding_v1'
 
 export function hasCompletedOnboarding(): boolean {
   try {
@@ -104,21 +80,9 @@ export function getInitialScreen(): ScreenId {
 export function go(target: ScreenId): void {
   closeTransientUi()
 
-  SCREEN_IDS.forEach((id) => {
-    try {
-      screenElement(id).classList.remove('on')
-      screenElement(id).style.display = 'none'
-    } catch {
-      // optional screen
-    }
-  })
-
-  try {
-    const el = screenElement(target)
-    el.classList.add('on')
-    el.style.display = 'flex'
-  } catch {
-    console.warn(`Screen not found: ${target}`)
+  const module = getScreenModule(target)
+  if (!module) {
+    console.warn(`Screen module not found: ${target}`)
     return
   }
 
@@ -126,11 +90,18 @@ export function go(target: ScreenId): void {
   updateNavState(target)
   syncUrl(target)
 
-  try {
-    byId(`s-${target}`).scrollTop = 0
-  } catch {
-    // ignore
-  }
+  const container = screenContainer()
+  container.scrollTop = 0
+  container.focus({ preventScroll: true })
 
-  screenHooks[target]?.()
+  void Promise.resolve(module.render({ container })).catch((err: unknown) => {
+    console.error(`Failed to render screen ${target}`, err)
+    container.innerHTML = `<div class="cm-empty cm-empty--error" role="alert"><p class="cm-title-md">Could not load screen</p></div>`
+  })
+}
+
+/** @deprecated Use screenContainer() from AppShell */
+export function screenElement(name: string): HTMLElement {
+  if (name === getCurrentScreen()) return screenContainer()
+  return byId(`legacy-s-${name}`)
 }

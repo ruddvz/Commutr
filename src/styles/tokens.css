@@ -1,112 +1,106 @@
-/* COMMUTR design tokens — iOS-first PWA */
 :root {
-  --cm-bg: #050607;
-  --cm-bg-2: #0b0d10;
-  --cm-surface: rgba(255, 255, 255, 0.075);
-  --cm-surface-2: rgba(255, 255, 255, 0.11);
-  --cm-card: #101317;
-  --cm-card-raised: #151a20;
-  --cm-line: rgba(255, 255, 255, 0.1);
-  --cm-line-strong: rgba(255, 255, 255, 0.18);
+  /* Brand */
+  --cm-brand: #1f7a4d;
+  --cm-brand-strong: #145c39;
+  --cm-brand-soft: #e8f5ee;
+  --cm-brand-softer: #f3fbf6;
 
-  --cm-text: #f7f8f8;
-  --cm-text-2: #c8ced6;
-  --cm-muted: #8f99a8;
+  /* Accent */
+  --cm-accent: #2f80ed;
+  --cm-accent-soft: #eaf3ff;
+  --cm-warm: #f4b740;
+  --cm-warm-soft: #fff6df;
 
-  --cm-accent: #ccff00;
-  --cm-accent-2: #b8f500;
-  --cm-accent-soft: rgba(204, 255, 0, 0.14);
+  /* Backgrounds */
+  --cm-bg: #f5f8f4;
+  --cm-bg-elevated: #fbfcfa;
+  --cm-surface: #ffffff;
+  --cm-surface-soft: #f8faf7;
+  --cm-surface-tint: #eef6f1;
 
-  --cm-green: #21d07a;
-  --cm-yellow: #ffd166;
-  --cm-red: #ff5d6c;
-  --cm-blue: #59a6ff;
-  --cm-purple: #a88cff;
+  /* Text */
+  --cm-ink: #0d1712;
+  --cm-ink-2: #2c3a33;
+  --cm-muted: #6b7770;
+  --cm-muted-2: #93a09a;
+  --cm-placeholder: #a3aca7;
 
+  /* Lines */
+  --cm-line: #dde6df;
+  --cm-line-strong: #c6d4cb;
+  --cm-divider: rgba(13, 23, 18, 0.08);
+
+  /* Feedback */
+  --cm-success: #178a52;
+  --cm-success-soft: #e8f7ef;
+  --cm-warning: #b7791f;
+  --cm-warning-soft: #fff4d8;
+  --cm-danger: #d14343;
+  --cm-danger-soft: #fdecec;
+  --cm-info: #2563eb;
+  --cm-info-soft: #eff6ff;
+
+  /* Radius */
   --cm-radius-xs: 10px;
   --cm-radius-sm: 14px;
   --cm-radius-md: 18px;
-  --cm-radius-lg: 24px;
-  --cm-radius-xl: 30px;
+  --cm-radius-lg: 22px;
+  --cm-radius-xl: 28px;
+  --cm-radius-2xl: 34px;
   --cm-radius-pill: 999px;
 
-  --cm-shadow-card: 0 18px 60px rgba(0, 0, 0, 0.35);
-  --cm-shadow-float: 0 18px 55px rgba(0, 0, 0, 0.55);
+  /* Shadows */
+  --cm-shadow-card: 0 10px 30px rgba(15, 44, 31, 0.08);
+  --cm-shadow-float: 0 18px 50px rgba(15, 44, 31, 0.16);
+  --cm-shadow-soft: 0 1px 2px rgba(15, 44, 31, 0.04), 0 8px 24px rgba(15, 44, 31, 0.08);
 
+  /* Typography */
+  --cm-font:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', Inter, system-ui, sans-serif;
+  --cm-mono: 'SF Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
+
+  /* Layout */
+  --cm-page-max: 1120px;
+  --cm-mobile-pad: 16px;
+  --cm-desktop-pad: 28px;
+  --cm-bottom-nav-h: 78px;
+  --cm-topbar-h: 62px;
+
+  /* Spacing */
+  --cm-space-1: 4px;
+  --cm-space-2: 8px;
+  --cm-space-3: 12px;
+  --cm-space-4: 16px;
+  --cm-space-5: 20px;
+  --cm-space-6: 24px;
+  --cm-space-7: 28px;
+  --cm-space-8: 32px;
+  --cm-space-10: 40px;
+  --cm-space-12: 48px;
+
+  /* Safe area */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
+
+  /* Motion */
+  --cm-transition: 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.app-shell {
-  min-height: 100svh;
-  padding-top: var(--safe-top);
-  padding-bottom: var(--safe-bottom);
-}
-
-.bottom-nav,
-.bnav {
-  padding-bottom: max(10px, env(safe-area-inset-bottom, 0px));
-}
-
-.screen-scroll,
-.scr {
-  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
-}
-
-.cm-empty {
-  text-align: center;
-  padding: 32px 20px;
-  color: var(--cm-muted);
-}
-
-.cm-empty--error {
-  border: 1px solid rgba(255, 93, 108, 0.35);
-  border-radius: var(--cm-radius-md);
-  background: rgba(255, 93, 108, 0.08);
-}
-
-.cm-spinner {
-  width: 28px;
-  height: 28px;
-  margin: 0 auto 12px;
-  border: 3px solid var(--cm-line);
-  border-top-color: var(--cm-accent);
-  border-radius: 50%;
-  animation: cm-spin 0.8s linear infinite;
-}
-
-@keyframes cm-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.cm-offline-banner {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 9999;
-  padding: 10px 16px;
-  padding-top: calc(10px + env(safe-area-inset-top, 0px));
-  background: #3d2200;
-  color: #ffd166;
-  font-size: 13px;
-  text-align: center;
-}
-
-.cm-prototype-only {
-  display: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'] {
+    --cm-bg: #07100b;
+    --cm-bg-elevated: #0d1712;
+    --cm-surface: #101b15;
+    --cm-surface-soft: #132019;
+    --cm-surface-tint: #17281f;
+    --cm-ink: #f4faf6;
+    --cm-ink-2: #d8e3dc;
+    --cm-muted: #9caaa2;
+    --cm-muted-2: #75847b;
+    --cm-line: rgba(255, 255, 255, 0.1);
+    --cm-line-strong: rgba(255, 255, 255, 0.16);
+    --cm-brand-soft: rgba(31, 122, 77, 0.18);
   }
 }

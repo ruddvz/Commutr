@@ -8,13 +8,18 @@ import { registerServiceWorker } from './utils/pwa'
 import { go, getInitialScreen, updateNavState } from './utils/router'
 import { bindGlobalDelegation } from './app/delegation'
 import { initOnboarding } from './screens/onboardingScreen'
+import { registerAllScreens } from './app/registerScreens'
+import { initAppShell } from './components/AppShell'
 import { authService } from './services/authService'
 import { appStore } from './app/store'
-import { bindScrollMorph, bindScrollAwareTabbars } from './components/navigation'
 import { bindMessageButtons } from './components/chat'
 import { mountOfflineBanner } from './components/uiStates'
 
 function init(): void {
+  document.documentElement.setAttribute('data-theme', 'system')
+
+  initAppShell()
+  registerAllScreens()
   bindGlobalDelegation()
   mountOfflineBanner()
   initOnboarding()
@@ -33,7 +38,7 @@ function init(): void {
           email: user.email,
           verified: user.verified,
           ratingAvg: (user as { ratingAvg?: number }).ratingAvg,
-          ratingCount: user.ratingCount,
+          ratingCount: (user as { ratingCount?: number }).ratingCount,
           role: (user as { role?: string }).role,
         })
       })
@@ -42,8 +47,6 @@ function init(): void {
       })
   }
 
-  bindScrollMorph()
-  bindScrollAwareTabbars()
   bindMessageButtons()
 }
 

@@ -15,8 +15,11 @@ export function qsa<T extends Element = Element>(
   return Array.from(root.querySelectorAll<T>(selector))
 }
 
-export function screenElement(name: string): HTMLElement {
-  return byId(`s-${name}`)
+/** @deprecated Screens render into #appScreen via the router */
+export function screenElement(_name: string): HTMLElement {
+  const el = document.getElementById('appScreen')
+  if (!el) throw new Error('#appScreen not found')
+  return el
 }
 
 export function escapeHtml(value: string): string {

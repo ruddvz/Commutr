@@ -1,6 +1,6 @@
 import type { ScreenId } from '@/utils/router'
 import { go, SCREEN_IDS } from '@/utils/router'
-import { showOTP, otpMove } from '@/components/otpInput'
+import { showOTP } from '@/components/otpInput'
 import { chipSel, segSel, stepChg } from '@/components/chipSelector'
 import { showToast } from '@/components/toast'
 import { submitRating } from '@/components/starRating'
@@ -10,6 +10,7 @@ import { handleSignupSubmit, handleLoginSubmit } from '@/screens/authScreen'
 import { runSearch, retryLastSearch } from '@/screens/searchScreen'
 import { submitPostRide } from '@/screens/postRideScreen'
 import { requestSeatOnDetail } from '@/screens/rideDetailScreen'
+import { appStore } from '@/app/store'
 
 function closestAction(el: EventTarget | null): HTMLElement | null {
   if (!(el instanceof Element)) return null
@@ -54,6 +55,9 @@ export function bindGlobalDelegation(): void {
       case 'login-submit':
         void handleLoginSubmit()
         break
+      case 'auth-prototype':
+        showToast('Social sign-in is not available in this build. Use email and password.')
+        break
       case 'search-run':
         void runSearch()
         break
@@ -63,8 +67,21 @@ export function bindGlobalDelegation(): void {
       case 'post-submit':
         void submitPostRide()
         break
+      case 'post-next':
+      case 'post-back':
+        break
       case 'request-seat':
         void requestSeatOnDetail()
+        break
+      case 'open-ride':
+        {
+          const card = target.closest<HTMLElement>('[data-ride-id]')
+          const id = card?.dataset['rideId']
+          if (id) {
+            appStore.setSelectedRideId(id)
+            go('detail')
+          }
+        }
         break
       case 'send-msg':
         sendMsg()
@@ -83,24 +100,11 @@ export function bindGlobalDelegation(): void {
       case 'seg-select':
         segSel(target)
         break
-      case 'step-change': {
-        const delta = parseInt(target.dataset['delta'] ?? '0', 10)
-        stepChg(target, delta)
-        break
-      }
-      case 'toast':
-        showToast(target.dataset['message'] ?? 'Done')
+      case 'step-change':
+        stepChg(target, parseInt(target.dataset['step'] ?? '0', 10))
         break
       default:
         break
     }
-  })
-
-  document.addEventListener('input', (event) => {
-    const el = event.target
-    if (!(el instanceof HTMLInputElement)) return
-    if (!el.classList.contains('otpbox')) return
-    const index = parseInt(el.dataset['otpIndex'] ?? '0', 10)
-    if (index > 0) otpMove(el, index)
   })
 }
