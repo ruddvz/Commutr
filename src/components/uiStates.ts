@@ -1,4 +1,5 @@
 import { escapeHtml } from '@/utils/dom'
+import { iconRoute } from '@/components/icons'
 import { renderButton } from '@/components/Button'
 
 export function showLoading(container: HTMLElement, message = 'Loading…'): void {
@@ -19,7 +20,7 @@ export function showEmpty(
       : ''
   container.innerHTML = `
     <div class="cm-empty" role="status">
-      <div class="cm-empty__icon" aria-hidden="true">🛣</div>
+      <div class="cm-empty__icon" aria-hidden="true">${iconRoute()}</div>
       <p class="cm-title-md">${escapeHtml(opts.title)}</p>
       <p class="cm-body cm-muted cm-mt-2">${escapeHtml(opts.body)}</p>
       ${action ? `<div class="cm-mt-4">${action}</div>` : ''}

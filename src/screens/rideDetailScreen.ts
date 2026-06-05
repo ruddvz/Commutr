@@ -13,6 +13,7 @@ import { openBottomSheet, closeBottomSheet } from '@/components/BottomSheet'
 import { mountTopBar } from '@/components/TopBar'
 import { renderStickyActions } from '@/components/AppShell'
 import { isStaticDemo } from '@/config/runtime'
+import { iconShare } from '@/components/icons'
 import type { ScreenRenderContext } from '@/app/screenRegistry'
 import { escapeHtml } from '@/utils/dom'
 import { formatCAD, formatDateTime } from '@/utils/format'
@@ -23,7 +24,7 @@ export function renderRideDetailScreen({ container }: ScreenRenderContext): void
     title: 'Ride details',
     showBack: true,
     backGo: 'search',
-    actions: `<button type="button" class="cm-icon-button" aria-label="Share ride">↗</button>`,
+    actions: `<button type="button" class="cm-icon-button" data-action="share-ride" aria-label="Share ride">${iconShare()}</button>`,
   })
 
   container.className = 'cm-screen'

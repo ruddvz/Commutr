@@ -1,15 +1,9 @@
-import { appendChatMessage } from '@/screens/chatScreen'
+import { appendChatMessage, persistOutgoingMessage } from '@/screens/chatScreen'
 
-/**
- * Set the chat context (which conversation is open).
- */
 export function openChat(_userId: string): void {
   scrollChatToEnd()
 }
 
-/**
- * Append an emoji to the chat input.
- */
 export function addEmoji(emoji: string): void {
   const input = document.getElementById('chat-input') as HTMLInputElement | null
   if (!input) return
@@ -17,9 +11,6 @@ export function addEmoji(emoji: string): void {
   input.focus()
 }
 
-/**
- * Send the current chat message.
- */
 export function sendMsg(): void {
   const input = document.getElementById('chat-input') as HTMLInputElement | null
   if (!input) return
@@ -28,6 +19,7 @@ export function sendMsg(): void {
 
   appendChatMessage(text, true)
   input.value = ''
+  void persistOutgoingMessage(text)
   scrollChatToEnd()
 }
 

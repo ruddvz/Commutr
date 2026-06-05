@@ -5,7 +5,7 @@
 import './styles/main.css'
 
 import { registerServiceWorker, initPwaUpdateToast } from './utils/pwa'
-import { go, getInitialScreen, updateNavState } from './utils/router'
+import { go, getInitialScreen, updateNavState, markOnboardingComplete } from './utils/router'
 import { bindGlobalDelegation } from './app/delegation'
 import { initOnboarding } from './screens/onboardingScreen'
 import { registerAllScreens } from './app/registerScreens'
@@ -33,9 +33,21 @@ function init(): void {
 
   const initial = getInitialScreen()
   updateNavState(initial)
+
+  if (!authService.isAuthenticated()) {
+    const guest = authService.continueAsGuest()
+    appStore.setUser({
+      id: guest.id,
+      name: guest.name,
+      email: guest.email,
+      verified: guest.verified,
+    })
+    markOnboardingComplete()
+  }
+
   go(initial)
 
-  if (authService.isAuthenticated()) {
+  if (authService.isAuthenticated() && !authService.isDemoGuest()) {
     void authService
       .fetchMe()
       .then((user) => {

@@ -107,6 +107,36 @@ export function getDemoRideById(id: string): Ride | undefined {
   return getDemoRides().find((r) => r.id === id)
 }
 
+export type DemoUser = {
+  id: string
+  name: string
+  email: string
+  verified: boolean
+  ratingAvg: number
+  ratingCount: number
+  trips: number
+  joinedYear: number
+  location: string
+}
+
+export function getDemoUser(): DemoUser {
+  return {
+    id: 'local-user',
+    name: 'Rudra P.',
+    email: 'demo@commutr.app',
+    verified: true,
+    ratingAvg: 4.9,
+    ratingCount: 8,
+    trips: 12,
+    joinedYear: 2026,
+    location: 'London, ON',
+  }
+}
+
+export function getPostedDemoRides(): Ride[] {
+  return getDemoRides().filter((r) => r.driverId === 'local-user' || r.driverName === 'You')
+}
+
 export type RideSearchQuery = {
   origin?: string
   destination?: string

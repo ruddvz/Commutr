@@ -1,5 +1,5 @@
 .cm-button {
-  min-height: 48px;
+  min-height: 56px;
   border: 0;
   border-radius: var(--cm-radius-pill);
   padding: 0 18px;
@@ -152,7 +152,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 42px;
+  min-height: 44px;
   padding: 0 16px;
   border-radius: var(--cm-radius-pill);
   border: 1px solid rgba(32, 138, 83, 0.2);

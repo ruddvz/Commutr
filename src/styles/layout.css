@@ -35,7 +35,7 @@
   bottom: 0;
   z-index: 40;
   padding: var(--cm-space-3) var(--cm-mobile-pad) calc(var(--cm-space-3) + var(--safe-bottom));
-  background: linear-gradient(180deg, transparent, rgba(245, 248, 244, 0.96) 24%);
+  background: linear-gradient(180deg, transparent, rgba(6, 18, 13, 0.92) 24%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }

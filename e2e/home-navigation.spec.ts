@@ -8,10 +8,12 @@ test('home loads without fatal error', async ({ page }) => {
 
 test('bottom tabs navigate', async ({ page }) => {
   await page.goto('./?screen=home')
-  await page.getByRole('tab', { name: /search/i }).click()
+  await expect(page.getByText('Where are you going?')).toBeVisible()
+  await page.getByRole('tab', { name: /^Search$/i }).click()
   await expect(page.locator('#appTopBar .cm-topbar__title')).toHaveText(/Search rides/i)
-  await page.getByRole('tab', { name: /post/i }).click()
-  await expect(page.locator('#appTopBar .cm-topbar__title')).toHaveText(/Post a ride/i)
+  await page.getByRole('tab', { name: /^Post$/i }).click()
+  await expect(page.locator('#post-step-content')).toBeVisible()
+  await expect(page.getByText(/Step 1 of/)).toBeVisible()
 })
 
 test('search flow opens results', async ({ page }) => {

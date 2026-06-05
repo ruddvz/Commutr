@@ -1,33 +1,14 @@
-import { mountTopBar } from '@/components/TopBar'
+import { chatService } from '@/services/chatService'
+import { appStore } from '@/app/store'
+import { go } from '@/utils/router'
 import { renderBadge } from '@/components/Badge'
 import { renderAvatar } from '@/components/Avatar'
 import { renderChip, renderChipRow } from '@/components/Chip'
-import { showEmpty } from '@/components/uiStates'
-import { go } from '@/utils/router'
-import type { ScreenRenderContext } from '@/app/screenRegistry'
+import { mountTopBar } from '@/components/TopBar'
 import { iconSearch } from '@/components/icons'
+import { showEmpty } from '@/components/uiStates'
+import type { ScreenRenderContext } from '@/app/screenRegistry'
 import { escapeHtml } from '@/utils/dom'
-
-const CONVERSATIONS = [
-  {
-    id: '1',
-    name: 'Priya K.',
-    route: 'London → Toronto',
-    lastMessage: 'See you at Masonville Mall at 8.',
-    time: '2m',
-    unread: 2,
-    status: 'Seat held',
-  },
-  {
-    id: '2',
-    name: 'Marcus T.',
-    route: 'Toronto → Ottawa',
-    lastMessage: 'Request sent',
-    time: '1h',
-    unread: 0,
-    status: 'Request sent',
-  },
-]
 
 let inboxFilter = 'All'
 
@@ -43,7 +24,7 @@ export function renderInboxScreen({ container }: ScreenRenderContext): void {
     <div id="inbox-list" class="cm-card-list cm-mt-4"></div>`
 
   bindInboxEvents(container)
-  renderInboxList(container)
+  void loadInbox(container)
 }
 
 function bindInboxEvents(container: HTMLElement): void {
@@ -55,49 +36,77 @@ function bindInboxEvents(container: HTMLElement): void {
   })
 }
 
-function renderInboxList(container: HTMLElement): void {
-  const list = container.querySelector('#inbox-list') as HTMLElement
-  const filtered =
-    inboxFilter === 'All'
-      ? CONVERSATIONS
-      : CONVERSATIONS.filter((c) =>
-          inboxFilter === 'Seat requests'
-            ? c.status === 'Request sent'
-            : inboxFilter === 'Confirmed'
-              ? c.status === 'Seat held'
-              : false,
-        )
+async function loadInbox(container: HTMLElement): Promise<void> {
+  const el = container.querySelector('#inbox-list') as HTMLElement
+  if (!el) return
 
-  if (filtered.length === 0) {
-    showEmpty(list, {
+  try {
+    const conversations = await chatService.getConversations()
+    const filtered =
+      inboxFilter === 'All'
+        ? conversations
+        : conversations.filter((c) => {
+            if (inboxFilter === 'Seat requests') return c.unreadCount > 0
+            if (inboxFilter === 'Confirmed') return c.rideId
+            return true
+          })
+
+    if (filtered.length === 0) {
+      showEmpty(el, {
+        title: 'No messages yet',
+        body: 'When you request a seat or a rider contacts you, chats will appear here.',
+        actionLabel: 'Find rides',
+        actionGo: 'search',
+      })
+      return
+    }
+
+    el.innerHTML = filtered
+      .map((c) => {
+        const last = c.lastMessage?.text ?? 'Start the conversation'
+        const time = formatRelative(c.updatedAt)
+        return `
+      <article class="cm-card cm-conversation-card" data-action="open-chat" data-chat-id="${escapeHtml(c.id)}" tabindex="0">
+        <div class="cm-row">
+          ${renderAvatar(c.participantName)}
+          <div style="flex:1;min-width:0">
+            <div class="cm-row cm-row--between">
+              <span class="cm-body" style="font-weight:750">${escapeHtml(c.participantName)}</span>
+              <span class="cm-caption cm-muted">${escapeHtml(time)}</span>
+            </div>
+            <p class="cm-caption cm-muted">${escapeHtml(c.routeLabel)}</p>
+            <p class="cm-body cm-truncate">${escapeHtml(last)}</p>
+          </div>
+          ${c.unreadCount > 0 ? renderBadge(String(c.unreadCount), 'brand') : ''}
+        </div>
+      </article>`
+      })
+      .join('')
+
+    el.querySelectorAll<HTMLElement>('[data-action="open-chat"]').forEach((card) => {
+      card.addEventListener('click', () => {
+        const id = card.dataset['chatId']
+        if (id) {
+          appStore.setActiveConversationId(id)
+          go('chat')
+        }
+      })
+    })
+  } catch {
+    showEmpty(el, {
       title: 'No messages yet',
-      body: 'When you message a driver or receive seat requests, conversations appear here.',
-      actionLabel: 'Search rides',
+      body: 'When you request a seat or a rider contacts you, chats will appear here.',
+      actionLabel: 'Find rides',
       actionGo: 'search',
     })
-    return
   }
+}
 
-  list.innerHTML = filtered
-    .map(
-      (c) => `
-      <article class="cm-card cm-conversation-card" data-action="open-chat" data-chat-id="${escapeHtml(c.id)}" tabindex="0">
-        ${renderAvatar(c.name)}
-        <div style="flex:1;min-width:0">
-          <div class="cm-row cm-row--between">
-            <span class="cm-body" style="font-weight:750">${escapeHtml(c.name)}</span>
-            <span class="cm-caption cm-muted">${escapeHtml(c.time)}</span>
-          </div>
-          <p class="cm-caption cm-muted">${escapeHtml(c.route)}</p>
-          <p class="cm-body">${escapeHtml(c.lastMessage)}</p>
-          <div class="cm-mt-2">${renderBadge(c.status, c.status === 'Seat held' ? 'success' : 'warning')}</div>
-        </div>
-        ${c.unread > 0 ? `<span class="cm-badge cm-badge--brand">${c.unread}</span>` : ''}
-      </article>`,
-    )
-    .join('')
-
-  list.querySelectorAll('[data-action="open-chat"]').forEach((el) => {
-    el.addEventListener('click', () => go('chat'))
-  })
+function formatRelative(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 60) return `${Math.max(1, mins)}m`
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24) return `${hrs}h`
+  return `${Math.floor(hrs / 24)}d`
 }

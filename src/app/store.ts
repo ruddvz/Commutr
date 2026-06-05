@@ -14,6 +14,7 @@ interface AppState {
   user: AppUser | null
   recentSearches: Array<{ origin: string; destination: string; date?: string }>
   selectedRideId: string | null
+  activeConversationId: string | null
   useFixtures: boolean
 }
 
@@ -23,6 +24,7 @@ const defaultState: AppState = {
   user: null,
   recentSearches: [],
   selectedRideId: null,
+  activeConversationId: null,
   useFixtures: import.meta.env.VITE_USE_FIXTURES === 'true',
 }
 
@@ -32,6 +34,7 @@ function persist(): void {
   storageSet(STATE_KEY, {
     recentSearches: state.recentSearches,
     selectedRideId: state.selectedRideId,
+    activeConversationId: state.activeConversationId,
   })
 }
 
@@ -56,6 +59,15 @@ export const appStore = {
   setSelectedRideId(id: string | null): void {
     state = { ...state, selectedRideId: id }
     persist()
+  },
+
+  setActiveConversationId(id: string | null): void {
+    state = { ...state, activeConversationId: id }
+    persist()
+  },
+
+  getActiveConversationId(): string | null {
+    return state.activeConversationId
   },
 
   getSelectedRideId(): string | null {

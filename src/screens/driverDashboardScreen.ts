@@ -1,30 +1,27 @@
+import { getPostedDemoRides } from '@/config/demoData'
+import { seatRequestService } from '@/services/seatRequestService'
+import { appStore } from '@/app/store'
+import { go } from '@/utils/router'
 import { renderButton } from '@/components/Button'
 import { renderBadge } from '@/components/Badge'
 import { renderAvatar } from '@/components/Avatar'
 import { mountTopBar } from '@/components/TopBar'
+import { mountRideCards, bindRideCardClicks } from '@/components/RideCard'
 import { showEmpty } from '@/components/uiStates'
+import { showToast } from '@/components/toast'
 import type { ScreenRenderContext } from '@/app/screenRegistry'
 import { escapeHtml } from '@/utils/dom'
-
-const PENDING = [
-  {
-    id: 'req-1',
-    name: 'Alex M.',
-    route: 'Toronto → Ottawa',
-    seats: 1,
-    rating: '4.8',
-  },
-]
+import type { SeatRequest } from '@/contracts/types/SeatRequest'
 
 export function renderDriverDashboardScreen({ container }: ScreenRenderContext): void {
-  mountTopBar({ title: 'Driver dashboard', subtitle: 'Today · 2 rides' })
+  mountTopBar({ title: 'Driver dashboard', subtitle: 'Your posted rides' })
 
   container.className = 'cm-screen'
   container.innerHTML = `
     <div class="cm-stack cm-stack--lg">
       <section class="cm-dashboard-stat-row">
-        <div class="cm-card cm-card--pad"><p class="cm-caption cm-muted">This month</p><p class="cm-title-md">4 rides</p></div>
-        <div class="cm-card cm-card--pad"><p class="cm-caption cm-muted">Rating</p><p class="cm-title-md">4.9 ★</p></div>
+        <div class="cm-card cm-card--pad"><p class="cm-caption cm-muted">This month</p><p class="cm-title-md" id="dash-ride-count">—</p></div>
+        <div class="cm-card cm-card--pad"><p class="cm-caption cm-muted">Rating</p><p class="cm-title-md">4.9</p></div>
       </section>
 
       <section>
@@ -33,54 +30,93 @@ export function renderDriverDashboardScreen({ container }: ScreenRenderContext):
       </section>
 
       <section>
-        <h3 class="cm-section-title">Active rides</h3>
-        <div class="cm-card cm-card--pad">
-          <p class="cm-body" style="font-weight:750">Toronto → Ottawa</p>
-          <p class="cm-caption cm-muted">Sat · 2 of 3 seats filled · 1 pending</p>
-          <div class="cm-row cm-mt-4 cm-gap-2">
-            ${renderButton('Edit', { variant: 'outline' })}
-            ${renderButton('Manage', { variant: 'secondary', go: 'detail' })}
-          </div>
-        </div>
+        <h3 class="cm-section-title">Posted rides</h3>
+        <div id="posted-rides" class="cm-card-list"></div>
       </section>
 
-      <section class="cm-card cm-card--pad">
-        <h3 class="cm-section-title">Performance</h3>
-        <div class="cm-stats-grid">
-          <div><div class="cm-stats-grid__value">28</div><div class="cm-stats-grid__label">Rides</div></div>
-          <div><div class="cm-stats-grid__value">64</div><div class="cm-stats-grid__label">Passengers</div></div>
-          <div><div class="cm-stats-grid__value">$420</div><div class="cm-stats-grid__label">Fuel recovered</div></div>
-          <div><div class="cm-stats-grid__value">4.9</div><div class="cm-stats-grid__label">Rating</div></div>
-        </div>
-      </section>
-
-      ${renderButton('Upgrade to COMMUTR Pro', { variant: 'secondary', block: true, go: 'sub' })}
+      ${renderButton('Post a ride', { variant: 'primary', block: true, go: 'post' })}
     </div>`
 
-  renderPending(container)
+  void loadDashboard(container)
 }
 
-function renderPending(container: HTMLElement): void {
-  const el = container.querySelector('#pending-requests') as HTMLElement
-  if (PENDING.length === 0) {
-    showEmpty(el, { title: 'No pending requests', body: 'New seat requests will appear here.' })
-    return
+async function loadDashboard(container: HTMLElement): Promise<void> {
+  const pendingEl = container.querySelector('#pending-requests') as HTMLElement
+  const postedEl = container.querySelector('#posted-rides') as HTMLElement
+  const countEl = container.querySelector('#dash-ride-count')
+
+  const posted = getPostedDemoRides()
+  if (countEl) countEl.textContent = `${posted.length} ride${posted.length === 1 ? '' : 's'}`
+
+  let requests: SeatRequest[] = []
+  try {
+    requests = await seatRequestService.listMine()
+  } catch {
+    requests = []
   }
-  el.innerHTML = PENDING.map(
-    (r) => `
-    <article class="cm-card cm-card--pad">
-      <div class="cm-row">
-        ${renderAvatar(r.name)}
-        <div style="flex:1">
-          <p class="cm-body" style="font-weight:750">${escapeHtml(r.name)} · ★ ${escapeHtml(r.rating)}</p>
-          <p class="cm-caption cm-muted">${escapeHtml(r.route)} · ${r.seats} seat</p>
+
+  const pending = requests.filter((r) => r.status === 'requested')
+
+  if (pending.length === 0) {
+    showEmpty(pendingEl, {
+      title: 'No pending requests',
+      body: 'New seat requests will appear here when passengers request a seat.',
+      actionLabel: 'Post a ride',
+      actionGo: 'post',
+    })
+  } else {
+    pendingEl.innerHTML = pending
+      .map(
+        (r) => `
+      <article class="cm-card cm-card--pad">
+        <div class="cm-row">
+          ${renderAvatar('Passenger')}
+          <div style="flex:1">
+            <p class="cm-body" style="font-weight:750">Seat request</p>
+            <p class="cm-caption cm-muted">${r.requestedSeats} seat · Ride ${escapeHtml(r.rideId)}</p>
+          </div>
+          ${renderBadge('Pending', 'warning')}
         </div>
-        ${renderBadge('Request sent', 'warning')}
-      </div>
-      <div class="cm-row cm-mt-4 cm-gap-2">
-        ${renderButton('Decline', { variant: 'outline' })}
-        ${renderButton('Accept', { variant: 'primary' })}
-      </div>
-    </article>`,
-  ).join('')
+        <div class="cm-row cm-mt-4 cm-gap-2">
+          ${renderButton('Decline', { variant: 'outline', action: 'decline-request', id: `decline-${r.id}` })}
+          ${renderButton('Accept', { variant: 'primary', action: 'accept-request', id: `accept-${r.id}` })}
+        </div>
+      </article>`,
+      )
+      .join('')
+
+    pendingEl.querySelectorAll('[data-action="accept-request"]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = (btn as HTMLElement).id.replace('accept-', '')
+        void seatRequestService.accept(id).then(() => {
+          showToast('Request accepted')
+          void loadDashboard(container)
+        })
+      })
+    })
+    pendingEl.querySelectorAll('[data-action="decline-request"]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = (btn as HTMLElement).id.replace('decline-', '')
+        void seatRequestService.reject(id).then(() => {
+          showToast('Request declined')
+          void loadDashboard(container)
+        })
+      })
+    })
+  }
+
+  if (posted.length === 0) {
+    showEmpty(postedEl, {
+      title: 'No posted rides',
+      body: 'Post your first route and start receiving seat requests.',
+      actionLabel: 'Post a ride',
+      actionGo: 'post',
+    })
+  } else {
+    mountRideCards(postedEl, posted, 'driver-dashboard')
+    bindRideCardClicks(postedEl, (id) => {
+      appStore.setSelectedRideId(id)
+      go('detail')
+    })
+  }
 }

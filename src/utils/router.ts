@@ -2,6 +2,7 @@ import { byId, qsa } from './dom'
 import { getScreenModule } from '@/app/screenRegistry'
 import { updateShellNav, screenContainer } from '@/components/AppShell'
 import { closeBottomSheet } from '@/components/BottomSheet'
+import { authService } from '@/services/authService'
 
 export const SCREEN_IDS = [
   'ob',
@@ -19,6 +20,7 @@ export const SCREEN_IDS = [
   'settings',
   'sos',
   'sub',
+  'notfound',
 ] as const
 
 export type ScreenId = (typeof SCREEN_IDS)[number]
@@ -35,7 +37,8 @@ function screenFromUrl(): ScreenId | null {
   const params = new URLSearchParams(window.location.search)
   const screen = params.get('screen')
   if (!screen) return null
-  return (SCREEN_IDS as readonly string[]).includes(screen) ? (screen as ScreenId) : null
+  if (!(SCREEN_IDS as readonly string[]).includes(screen)) return 'notfound'
+  return screen as ScreenId
 }
 
 function syncUrl(target: ScreenId): void {
@@ -82,7 +85,12 @@ export function go(target: ScreenId): void {
 
   const module = getScreenModule(target)
   if (!module) {
-    console.warn(`Screen module not found: ${target}`)
+    go('notfound')
+    return
+  }
+
+  if (module.authRequired && !authService.isAuthenticated()) {
+    go('signup')
     return
   }
 
@@ -96,7 +104,7 @@ export function go(target: ScreenId): void {
 
   void Promise.resolve(module.render({ container })).catch((err: unknown) => {
     console.error(`Failed to render screen ${target}`, err)
-    container.innerHTML = `<div class="cm-empty cm-empty--error" role="alert"><p class="cm-title-md">Could not load screen</p></div>`
+    container.innerHTML = `<div class="cm-card cm-reconnect-card" role="alert"><p class="cm-reconnect-card__title">Could not load screen</p><p class="cm-body cm-muted cm-mt-2">Try again or return home.</p></div>`
   })
 }
 

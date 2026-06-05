@@ -54,3 +54,11 @@ export function iconFilter(): string {
 export function iconShare(): string {
   return `<svg ${svgAttrs} aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 16V4M8 8l4-4 4 4"/></svg>`
 }
+
+export function iconChevronRight(): string {
+  return `<svg ${svgAttrs} aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>`
+}
+
+export function iconSend(): string {
+  return `<svg ${svgAttrs} aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>`
+}

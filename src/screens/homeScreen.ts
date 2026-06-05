@@ -17,6 +17,8 @@ const POPULAR_ROUTES = [
   { origin: 'Ottawa, ON', destination: 'Montréal, QC' },
 ]
 
+let homeVerifiedOnly = false
+
 export function renderHomeScreen({ container }: ScreenRenderContext): void {
   registerScreenRender(() => renderHomeScreen({ container }))
 
@@ -39,7 +41,7 @@ export function renderHomeScreen({ container }: ScreenRenderContext): void {
             [
               renderChip('Today', { active: true }),
               renderChip('1 seat', { active: true }),
-              renderChip('Verified', {}),
+              renderChip('Verified', { pressed: homeVerifiedOnly, action: 'home-chip-verified' }),
             ].join(''),
           )}
           ${renderButton('Search rides', { variant: 'primary', block: true, action: 'home-search' })}
@@ -60,14 +62,14 @@ export function renderHomeScreen({ container }: ScreenRenderContext): void {
 
         <section class="cm-trust-panel">
           <p class="cm-trust-panel__title">Find a safe intercity ride</p>
-          <p class="cm-caption cm-muted cm-mt-2">Verified drivers · No platform fee · Direct chat</p>
+          <p class="cm-trust-panel__caption">Verified drivers · No platform fee · Direct chat</p>
         </section>
       </div>
 
       <section class="cm-home-grid__right">
         <div class="cm-row cm-row--between cm-mb-4">
           <h3 class="cm-section-title" style="margin:0">Today's rides</h3>
-          <button type="button" class="cm-filter-pill" data-action="home-filter-verified">Verified</button>
+          <button type="button" class="cm-filter-pill${homeVerifiedOnly ? ' cm-filter-pill--active' : ''}" data-action="home-filter-verified">${homeVerifiedOnly ? 'Verified' : 'All rides'}</button>
         </div>
         <div id="home-reconnect"></div>
         <div id="home-rides" class="cm-card-list">${renderRideCardSkeleton()}${renderRideCardSkeleton()}</div>
@@ -93,6 +95,20 @@ function bindHomeEvents(container: HTMLElement): void {
   container.querySelector('[data-action="home-search"]')?.addEventListener('click', () => {
     go('search')
   })
+
+  container.querySelector('[data-action="home-filter-verified"]')?.addEventListener('click', () => {
+    homeVerifiedOnly = !homeVerifiedOnly
+    renderHomeScreen({ container })
+  })
+
+  container.querySelector('[data-action="home-chip-verified"]')?.addEventListener('click', () => {
+    homeVerifiedOnly = !homeVerifiedOnly
+    renderHomeScreen({ container })
+  })
+}
+
+export async function reloadHomeRides(): Promise<void> {
+  await loadHomeRides()
 }
 
 async function loadHomeRides(): Promise<void> {
@@ -100,7 +116,8 @@ async function loadHomeRides(): Promise<void> {
   const reconnect = document.getElementById('home-reconnect')
   if (!list) return
 
-  const result = await searchRides({})
+  list.innerHTML = `${renderRideCardSkeleton()}${renderRideCardSkeleton()}`
+  const result = await searchRides({ verifiedOnly: homeVerifiedOnly || undefined })
 
   if (reconnect) reconnect.innerHTML = ''
 
@@ -110,9 +127,12 @@ async function loadHomeRides(): Promise<void> {
       `<div class="cm-reconnect-notice" role="status">
         <p class="cm-reconnect-notice__title">Couldn't reach live rides</p>
         <p class="cm-caption cm-muted">Showing sample routes while we reconnect. Your search still works.</p>
-        <button type="button" class="cm-button cm-button--secondary cm-button--sm" data-action="retry-last">Try again</button>
+        <button type="button" class="cm-button cm-button--secondary cm-button--sm" data-action="retry-home-rides">Try again</button>
       </div>`,
     )
+    reconnect?.querySelector('[data-action="retry-home-rides"]')?.addEventListener('click', () => {
+      void loadHomeRides()
+    })
   }
 
   if (result.rides.length === 0) {
