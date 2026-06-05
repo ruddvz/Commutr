@@ -1,60 +1,72 @@
 # COMMUTR v5
 
-Canada's fee-free intercity carpooling PWA. Mobile-first, dark themed, with a TypeScript frontend (Vite) and Express API backed by SQLite/Postgres via Prisma.
+Canada's fee-free intercity carpooling PWA. Mobile-first, dark themed, with a TypeScript frontend (Vite) and Express API backed by SQLite (dev) or Postgres (production).
 
 ## Quick start
 
 ```bash
 pnpm install --frozen-lockfile
 cp .env.example .env
-# Edit JWT_SECRET (≥32 chars) in .env
+# Edit JWT_SECRET (≥32 characters)
 
 pnpm exec prisma generate
-pnpm exec prisma db push
-pnpm db:seed   # optional demo data
+pnpm exec prisma migrate deploy   # or: pnpm exec prisma db push
+pnpm db:seed
 
 pnpm dev:all   # Vite :3000 + API :3001
 ```
 
+Open http://localhost:3000 — use `?screen=search` for deep links.
+
 ## Scripts
 
-| Command              | Description                                                    |
-| -------------------- | -------------------------------------------------------------- |
-| `pnpm dev`           | Vite dev server (port 3000)                                    |
-| `pnpm dev:server`    | Express API (port 3001)                                        |
-| `pnpm dev:all`       | Both concurrently                                              |
-| `pnpm typecheck`     | TypeScript check                                               |
-| `pnpm lint:check`    | ESLint                                                         |
-| `pnpm format:check`  | Prettier                                                       |
-| `pnpm test`          | Vitest                                                         |
-| `pnpm test:coverage` | Vitest + coverage                                              |
-| `pnpm build`         | Prisma generate + server compile + Vite build → `dist/client/` |
+| Command           | Description                                    |
+| ----------------- | ---------------------------------------------- |
+| `pnpm dev`        | Vite dev server                                |
+| `pnpm dev:server` | Express API                                    |
+| `pnpm dev:all`    | Both                                           |
+| `pnpm build`      | Production build → `dist/client/`              |
+| `pnpm test`       | Vitest unit + integration                      |
+| `pnpm test:e2e`   | Playwright (run `pnpm test:e2e:install` first) |
+| `pnpm db:seed`    | Demo driver + admin users                      |
 
 ## Architecture
 
-- **Frontend:** Vite + TypeScript (`src/`), PWA via `vite-plugin-pwa`, GitHub Pages base path `/Commutr/`
-- **Backend:** Express (`server/`), JWT auth, Zod validation, Prisma ORM
-- **Database:** SQLite by default (`DATABASE_URL=file:./data/commutr.db`); use Postgres in production by changing the Prisma datasource
+| Layer    | Stack                                           |
+| -------- | ----------------------------------------------- |
+| Frontend | Vite, vanilla TS modules, event delegation, PWA |
+| API      | Express, JWT + httpOnly cookie, Zod validation  |
+| DB       | Prisma ORM (SQLite dev, Postgres prod)          |
+| Deploy   | GitHub Pages (PWA) + separate API host          |
 
-## Deployment
+### Key API routes
 
-| Component  | Recommended host                                                |
-| ---------- | --------------------------------------------------------------- |
-| PWA static | GitHub Pages (`dist/client` via `.github/workflows/deploy.yml`) |
-| API        | Render, Railway, Fly.io, or similar                             |
-| Database   | Managed Postgres                                                |
-
-Set `VITE_API_URL` to your API origin in production builds. Set `CLIENT_ORIGIN` on the API to your PWA URL for CORS.
+- `POST /api/auth/register|login|logout` — `GET /api/auth/me`
+- `GET|POST /api/rides` — `POST /api/rides/:id/seat-requests`
+- `GET|POST /api/seat-requests/...` (accept/reject/cancel/confirm)
+- `GET|POST /api/chat/conversations`
+- `GET /api/subscription/me`
+- `POST /api/reports` — `POST|DELETE /api/blocks`
+- `GET|POST|DELETE /api/route-alerts`
+- `GET /api/admin/reports` (admin role)
 
 ## Environment
 
-See `.env.example` for all variables. `JWT_SECRET` is required (≥32 characters). Tests use `NODE_ENV=test` with a deterministic test secret.
+See `.env.example`. Required: `JWT_SECRET` (≥32 chars). Tests use `DATABASE_URL=file:./test.db`.
 
-## Product notes
+## Product & trust copy
 
-- Passengers **request seats**; drivers accept/reject. Payment is **direct with the driver** (cash/e-transfer)—COMMUTR does not process booking payments.
-- Copy avoids unverified claims (no “secure payments” unless integrated).
-- Free drivers: 3 ride posts/month; Pro plan (backend-enforced) allows unlimited posts.
+- **Cost share**, not fare — drivers and passengers pay each other directly.
+- **No COMMUTR booking fee** on passenger requests.
+- **No fake badges** — verification flags come from the database only.
+- **Price guardrails** warn on unusually high per-seat amounts.
+
+## Seed accounts
+
+| Email               | Password                   | Role         |
+| ------------------- | -------------------------- | ------------ |
+| `driver@commutr.ca` | `password123`              | driver (Pro) |
+| `admin@commutr.ca`  | `admin-password-change-me` | admin        |
 
 ## License
 

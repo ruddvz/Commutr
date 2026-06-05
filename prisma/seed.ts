@@ -49,7 +49,22 @@ async function main(): Promise<void> {
     },
   })
 
-  console.warn('Seed complete: driver@commutr.ca / password123')
+  const adminHash = await bcrypt.hash('admin-password-change-me', 12)
+  await prisma.user.upsert({
+    where: { email: 'admin@commutr.ca' },
+    update: { role: 'admin' },
+    create: {
+      name: 'COMMUTR Admin',
+      email: 'admin@commutr.ca',
+      passwordHash: adminHash,
+      role: 'admin',
+      verified: true,
+    },
+  })
+
+  console.warn(
+    'Seed complete: driver@commutr.ca / password123, admin@commutr.ca / admin-password-change-me',
+  )
 }
 
 main()

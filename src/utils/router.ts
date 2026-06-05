@@ -1,4 +1,6 @@
 import { byId, qsa, screenElement } from './dom'
+import { loadRideDetail } from '@/screens/rideDetailScreen'
+import { initSearchScreen } from '@/screens/searchScreen'
 
 export const SCREEN_IDS = [
   'ob',
@@ -22,12 +24,31 @@ export type ScreenId = (typeof SCREEN_IDS)[number]
 
 let currentScreen: ScreenId = 'ob'
 
+const screenHooks: Partial<Record<ScreenId, () => void>> = {
+  search: () => initSearchScreen(),
+  detail: () => {
+    void loadRideDetail()
+  },
+}
+
 export function getCurrentScreen(): ScreenId {
   return currentScreen
 }
 
+function screenFromUrl(): ScreenId | null {
+  const params = new URLSearchParams(window.location.search)
+  const screen = params.get('screen')
+  if (!screen) return null
+  return (SCREEN_IDS as readonly string[]).includes(screen) ? (screen as ScreenId) : null
+}
+
+function syncUrl(target: ScreenId): void {
+  const url = new URL(window.location.href)
+  url.searchParams.set('screen', target)
+  window.history.replaceState({ screen: target }, '', url)
+}
+
 export function closeTransientUi(): void {
-  // Close any open dropdowns or overlays
   qsa('.dropdown.open').forEach((el) => el.classList.remove('open'))
   qsa('[data-modal]').forEach((el) => ((el as HTMLElement).style.display = 'none'))
 }
@@ -44,12 +65,12 @@ export function updateNavState(target: ScreenId): void {
     desktnav.style.display = noNavScreens.includes(target) ? 'none' : ''
   }
 
-  // Active state on nav links
-  qsa<HTMLAnchorElement>('[data-go]', mainNav ?? document).forEach((link) => {
+  qsa<HTMLElement>('[data-go]', mainNav ?? document).forEach((link) => {
     const linkTarget = link.dataset['go'] as ScreenId
     link.classList.toggle('active', linkTarget === target)
+    link.setAttribute('aria-current', linkTarget === target ? 'page' : 'false')
   })
-  qsa<HTMLAnchorElement>('[data-go]', desktnav ?? document).forEach((link) => {
+  qsa<HTMLElement>('[data-go]', desktnav ?? document).forEach((link) => {
     const linkTarget = link.dataset['go'] as ScreenId
     link.classList.toggle('active', linkTarget === target)
   })
@@ -69,11 +90,13 @@ export function markOnboardingComplete(): void {
   try {
     localStorage.setItem(ONBOARDING_KEY, 'done')
   } catch {
-    // ignore quota errors
+    // ignore
   }
 }
 
 export function getInitialScreen(): ScreenId {
+  const fromUrl = screenFromUrl()
+  if (fromUrl) return fromUrl
   if (!hasCompletedOnboarding()) return 'ob'
   return 'home'
 }
@@ -81,17 +104,15 @@ export function getInitialScreen(): ScreenId {
 export function go(target: ScreenId): void {
   closeTransientUi()
 
-  // Hide all screens
   SCREEN_IDS.forEach((id) => {
     try {
       screenElement(id).classList.remove('on')
       screenElement(id).style.display = 'none'
     } catch {
-      // Screen element may not exist in DOM yet
+      // optional screen
     }
   })
 
-  // Show target screen
   try {
     const el = screenElement(target)
     el.classList.add('on')
@@ -103,11 +124,13 @@ export function go(target: ScreenId): void {
 
   currentScreen = target
   updateNavState(target)
+  syncUrl(target)
 
-  // Scroll to top
   try {
     byId(`s-${target}`).scrollTop = 0
   } catch {
     // ignore
   }
+
+  screenHooks[target]?.()
 }

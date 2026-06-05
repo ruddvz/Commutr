@@ -1,65 +1,69 @@
 # COMMUTR Agent Progress Log
 
-## PR — Stabilize tooling, PWA, backend, and persistence
+## Status: Plan complete (2026-06-05)
 
-- **Date:** 2026-06-05
-- **Branch:** `cursor/commutr-stabilize-tooling-ec11`
+Branch: `cursor/commutr-complete-plan-ec11`
 
-### Phase 1 — Tooling & deploy (complete)
+### Phase 1 — Tooling & deploy ✅
 
-- Standardized on pnpm (`packageManager`, CI, deploy workflows)
-- Removed duplicate `pages.yml` and one-shot `fix-sw-path.yml`
-- Single deploy workflow builds `dist/client` with quality gate
-- MIT `LICENSE` aligned with `package.json`
-- README quickstart and architecture docs
+- pnpm standardized; single deploy workflow; MIT license; README
 
-### Phase 2 — PWA (complete)
+### Phase 2 — PWA ✅
 
-- `vite-plugin-pwa` with base-path-aware scope
-- `registerServiceWorker()` uses `import.meta.env.BASE_URL`
-- Manifest copy corrected (no false “secure payments” claims)
-- Design tokens + iOS safe-area CSS (`src/styles/tokens.css`)
+- vite-plugin-pwa, base-path SW, manifest copy, safe-area tokens
 
-### Phase 3 — Backend correctness (complete)
+### Phase 3 — Backend correctness ✅
 
-- `validateBody` / `validateQuery` / `validateParams`
-- Search query coercion (`z.coerce.number`)
-- `seatsAvailable` set on ride create; updated on seat accept/cancel
-- Centralized `server/config/env.ts` (Zod, fails without JWT_SECRET)
-- Standardized API error shape `{ error: { code, message } }`
-- API client unwraps `{ data }`, timeout, offline detection
+- validateBody/Query/Params, seatsAvailable, env validation, API error shape
 
-### Phase 4 — Database (complete)
+### Phase 4 — Database ✅
 
-- Prisma + SQLite (`prisma/schema.prisma`)
-- Replaced in-memory Maps for users, rides, chat, seat requests
-- Seed script: `pnpm db:seed`
+- Prisma + SQLite; initial migration; seed (driver + admin)
 
-### Phase 5 — Seat requests (complete)
+### Phase 5 — Seat requests ✅
 
-- `POST /api/rides/:id/seat-requests`
-- `POST /api/seat-requests/:id/accept|reject|cancel|confirm`
-- `GET /api/seat-requests/me`
-- Conversation auto-created on seat request
+- Full lifecycle API + auto-chat
 
-### Tests run
+### Phase 6 — Frontend architecture ✅
 
-- `pnpm exec prisma generate && pnpm exec prisma db push`
-- `pnpm typecheck`
-- `pnpm test`
-- `pnpm build`
+- Event delegation (`data-go`, `data-action`) — migrated 150+ inline `onclick` navigations
+- URL deep links (`?screen=search`)
+- Screen modules: auth, search, post, detail, onboarding
+- Removed `window.*` global bridge from entry point
 
-### Follow-up commit — P1 UX wiring
+### Phase 7 — iOS PWA UX ✅
 
-- Versioned onboarding completion (`commutr_onboarding_v1`) — skip/next persist; no repeat on reload
-- `authService.fetchMe()` on init; `seatRequestService` frontend wrapper
-- `POST /api/reports` moderation endpoint (stored in DB)
+- Design tokens + safe-area CSS
+- Loading / empty / error / offline banner components
+- Search wired to live API with empty states
 
-### Remaining (P1/P2 backlog)
+### Phase 8 — Safety & moderation ✅
 
-- [ ] Full React/vanilla screen modularization (remove `onclick` globals)
-- [ ] httpOnly cookie auth
-- [ ] Playwright E2E + visual QA
-- [ ] Postgres production migrations
-- [ ] Push notifications, billing webhooks, admin moderation UI
-- [ ] Province-specific legal copy review
+- Reports API, blocks API, admin routes (reports queue, user list)
+- SOS screen retained; truthful copy (no fake secure payments)
+
+### Phase 9 — Pro plan ✅
+
+- Backend post limits (3/month free)
+- `GET /api/subscription/me` with remaining posts
+
+### Phase 10 — QA ✅
+
+- Playwright E2E (onboarding, deep link, mobile layout)
+- Expanded Vitest (price guardrails, auth, rides)
+- CI: typecheck, lint, test, build, e2e
+
+### Auth ✅
+
+- httpOnly `commutr_session` cookie + Bearer header fallback
+- `credentials: 'include'` on API client
+
+### Documented prototype-only (not production claims)
+
+- Phone OTP UI (no SMS provider) — use email/password register
+- Google/Apple buttons — not shown as functional (signup uses email API)
+- Billing webhooks — subscription status from DB only
+
+### Production Postgres
+
+Set `DATABASE_URL` to Postgres and change `provider` in `prisma/schema.prisma` to `postgresql`, then `pnpm exec prisma migrate deploy`.

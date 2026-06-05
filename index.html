@@ -64,24 +64,19 @@
     <!-- ═══════════════════════════════════ GLOBAL DESKTOP NAV ══════════════════════════════════ -->
     <nav class="desktnav" id="desktnav" role="navigation" aria-label="Main navigation">
       <div class="dn-left">
-        <span class="wm" onclick="go('home')" style="cursor: pointer">COMMUTR</span>
+        <span class="wm" data-go="home" style="cursor: pointer">COMMUTR</span>
       </div>
       <div class="dn-links" id="dnav-links">
-        <button class="dnb" data-screen="home" onclick="go('home')">Home</button>
-        <button class="dnb" data-screen="search" onclick="go('search')">Search</button>
-        <button class="dnb" data-screen="post" onclick="go('post')">Post a Ride</button>
-        <button class="dnb" data-screen="inbox" onclick="go('inbox')">
+        <button class="dnb" data-screen="home" data-go="home">Home</button>
+        <button class="dnb" data-screen="search" data-go="search">Search</button>
+        <button class="dnb" data-screen="post" data-go="post">Post a Ride</button>
+        <button class="dnb" data-screen="inbox" data-go="inbox">
           Messages<span class="dnbadge">3</span>
         </button>
-        <button class="dnb" data-screen="profile" onclick="go('profile')">Profile</button>
+        <button class="dnb" data-screen="profile" data-go="profile">Profile</button>
       </div>
       <div class="dn-right">
-        <button
-          class="ib"
-          onclick="go('notifs')"
-          aria-label="Notifications"
-          style="position: relative"
-        >
+        <button class="ib" data-go="notifs" aria-label="Notifications" style="position: relative">
           <svg
             width="17"
             height="17"
@@ -109,7 +104,7 @@
         <div
           class="av avg"
           style="width: 34px; height: 34px; font-size: 12px; cursor: pointer"
-          onclick="go('profile')"
+          data-go="profile"
         >
           RK
         </div>
@@ -561,12 +556,12 @@
           <div class="obdot" style="width: 6px"></div>
           <div class="obdot" style="width: 6px"></div>
         </div>
-        <button class="btn m0" id="ob-cta" onclick="obNext()">Get Started — It's Free</button>
-        <button class="btn2" style="margin-top: 10px" onclick="go('signup')">
+        <button class="btn m0" id="ob-cta" data-action="ob-next">Get Started — It's Free</button>
+        <button class="btn2" style="margin-top: 10px" data-go="signup">
           Sign In to Existing Account
         </button>
         <div style="text-align: right; margin-top: 8px">
-          <button class="ghost" style="font-size: 13px" onclick="finishOnboarding()">Skip</button>
+          <button class="ghost" style="font-size: 13px" data-action="ob-finish">Skip</button>
         </div>
       </div>
     </div>
@@ -577,7 +572,7 @@
     <div class="scr" id="s-signup">
       <div class="topbar">
         <div class="trow">
-          <button class="ib" onclick="go('ob')" aria-label="Back">
+          <button class="ib" data-go="ob" aria-label="Back">
             <svg
               width="18"
               height="18"
@@ -634,11 +629,23 @@
           <div class="px m1">
             <div class="fg">
               <label class="inpl">Full Name</label>
-              <input class="inp" type="text" placeholder="Rudrakumar Patel" />
+              <input
+                id="signup-name"
+                class="inp"
+                type="text"
+                placeholder="Rudrakumar Patel"
+                autocomplete="name"
+              />
             </div>
             <div class="fg">
               <label class="inpl">Email Address</label>
-              <input class="inp" type="email" placeholder="you@email.com" />
+              <input
+                id="signup-email"
+                class="inp"
+                type="email"
+                placeholder="you@email.com"
+                autocomplete="email"
+              />
             </div>
             <div class="fg">
               <label class="inpl">Phone Number</label>
@@ -646,19 +653,32 @@
                 <div style="width: 64px; flex-shrink: 0">
                   <input class="inp" type="text" value="+1" style="text-align: center" />
                 </div>
-                <input class="inp" type="tel" placeholder="(519) 555-0123" style="flex: 1" />
+                <input
+                  id="signup-phone"
+                  class="inp"
+                  type="tel"
+                  placeholder="(519) 555-0123"
+                  style="flex: 1"
+                  autocomplete="tel"
+                />
               </div>
             </div>
             <div class="fg">
               <label class="inpl">Password</label>
-              <input class="inp" type="password" placeholder="At least 8 characters" />
+              <input
+                id="signup-password"
+                class="inp"
+                type="password"
+                placeholder="At least 8 characters"
+                autocomplete="new-password"
+              />
             </div>
             <div class="fg">
               <label class="inpl">Referred by (optional)</label>
               <input class="inp" type="text" placeholder="Enter referral code" />
             </div>
             <div class="m3" style="margin-bottom: 12px">
-              <button class="btn" onclick="showOTP()">
+              <button type="button" class="btn" data-action="signup-submit">
                 <svg
                   width="17"
                   height="17"
@@ -697,9 +717,14 @@
             </p>
             <p style="font-size: 14px; color: var(--t3); text-align: center; margin-top: 14px">
               Already have an account?
-              <span style="color: var(--g6); font-weight: 700; cursor: pointer" onclick="go('home')"
-                >Sign In</span
+              <button
+                type="button"
+                class="ghost"
+                style="color: var(--g6); font-weight: 700"
+                data-action="login-submit"
               >
+                Sign In
+              </button>
             </p>
           </div>
         </div>
@@ -746,7 +771,7 @@
               <input class="otpbox" type="tel" maxlength="1" oninput="otpMove(this, 3)" />
               <input class="otpbox" type="tel" maxlength="1" oninput="otpMove(this, 4)" />
             </div>
-            <button class="btn" onclick="go('home')" style="margin-bottom: 12px">
+            <button class="btn" data-go="home" style="margin-bottom: 12px">
               Verify & Continue
             </button>
             <p class="tb2">
@@ -775,12 +800,7 @@
       <div class="topbar">
         <div class="trow">
           <span class="wm">COMMUTR</span>
-          <button
-            class="ib"
-            style="margin-left: auto"
-            onclick="go('notifs')"
-            aria-label="Notifications"
-          >
+          <button class="ib" style="margin-left: auto" data-go="notifs" aria-label="Notifications">
             <svg
               width="17"
               height="17"
@@ -828,7 +848,7 @@
           <div
             class="glg"
             style="border-radius: var(--r5); padding: 14px 16px; cursor: pointer"
-            onclick="go('search')"
+            data-go="search"
           >
             <div style="display: flex; align-items: center; gap: 10px">
               <div style="display: flex; flex-direction: column; align-items: center; gap: 1px">
@@ -1002,11 +1022,11 @@
         </div>
         <div class="sechd">
           <div class="sechtl">Available Now</div>
-          <div class="secha" onclick="go('search')">See all</div>
+          <div class="secha" data-go="search">See all</div>
         </div>
         <div class="px rides-list rides-grid">
           <!-- Ride 1 -->
-          <div class="rc m2" onclick="go('detail')">
+          <div class="rc m2" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div class="av avg" style="width: 44px; height: 44px; font-size: 15px">PK</div>
@@ -1039,7 +1059,7 @@
             </div>
           </div>
           <!-- Ride 2 -->
-          <div class="rc m3" onclick="go('detail')">
+          <div class="rc m3" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div class="av avo" style="width: 44px; height: 44px; font-size: 15px">AM</div>
@@ -1071,7 +1091,7 @@
             </div>
           </div>
           <!-- Ride 3 -->
-          <div class="rc m4" onclick="go('detail')">
+          <div class="rc m4" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div
@@ -1113,7 +1133,7 @@
             </div>
           </div>
           <!-- Ride 4 -->
-          <div class="rc m5" onclick="go('detail')">
+          <div class="rc m5" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div class="av avo" style="width: 44px; height: 44px; font-size: 15px">DL</div>
@@ -1145,7 +1165,7 @@
             </div>
           </div>
           <!-- Ride 5 -->
-          <div class="rc m6" onclick="go('detail')">
+          <div class="rc m6" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div
@@ -1188,7 +1208,7 @@
             </div>
           </div>
           <!-- Ride 6 -->
-          <div class="rc m7" onclick="go('detail')">
+          <div class="rc m7" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div class="av avo" style="width: 44px; height: 44px; font-size: 15px">JW</div>
@@ -1220,7 +1240,7 @@
             </div>
           </div>
           <!-- Ride 7 -->
-          <div class="rc m8" onclick="go('detail')">
+          <div class="rc m8" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div class="av avg" style="width: 44px; height: 44px; font-size: 15px">RC</div>
@@ -1271,7 +1291,7 @@
             <div class="th4" style="font-size: 16px">No rides to Windsor yet</div>
             <div class="tb2">Be the first to post, or get notified when someone does.</div>
             <div style="display: flex; gap: 8px; width: 100%">
-              <button class="btn" style="font-size: 13px; padding: 11px 0" onclick="go('post')">
+              <button class="btn" style="font-size: 13px; padding: 11px 0" data-go="post">
                 Post Route
               </button>
               <button
@@ -1324,7 +1344,7 @@
             </div>
             <span class="tlbl">Home</span>
           </button>
-          <button class="tb" onclick="go('search')" aria-label="Search">
+          <button class="tb" data-go="search" aria-label="Search">
             <div class="tbi">
               <svg
                 width="22"
@@ -1339,7 +1359,7 @@
             </div>
             <span class="tlbl">Search</span>
           </button>
-          <button class="tc" onclick="go('post')" aria-label="Post a ride">
+          <button class="tc" data-go="post" aria-label="Post a ride">
             <div class="tcb">
               <svg
                 width="24"
@@ -1354,7 +1374,7 @@
             </div>
             <span class="tclbl">Post</span>
           </button>
-          <button class="tb" onclick="go('inbox')" aria-label="Messages">
+          <button class="tb" data-go="inbox" aria-label="Messages">
             <div class="tbi" style="position: relative">
               <svg
                 width="22"
@@ -1370,7 +1390,7 @@
             </div>
             <span class="tlbl">Messages</span>
           </button>
-          <button class="tb" onclick="go('profile')" aria-label="Profile">
+          <button class="tb" data-go="profile" aria-label="Profile">
             <div class="tbi">
               <svg
                 width="22"
@@ -1396,7 +1416,7 @@
     <div class="scr" id="s-search">
       <div class="topbar">
         <div class="trow">
-          <button class="ib" onclick="go('home')" aria-label="Back">
+          <button class="ib" data-go="home" aria-label="Back">
             <svg
               width="18"
               height="18"
@@ -1461,6 +1481,7 @@
                   font-weight: 600;
                   color: var(--t1);
                 "
+                id="search-origin"
                 placeholder="From — city or address"
                 value="London, ON"
               />
@@ -1523,6 +1544,7 @@
                   font-weight: 600;
                   color: var(--t1);
                 "
+                id="search-destination"
                 placeholder="To — destination"
               />
               <button class="ib" aria-label="Clear">
@@ -1718,6 +1740,12 @@
           </svg>
         </div>
         <!-- Filter chips -->
+        <div id="search-results" class="px" style="padding-top: 8px"></div>
+        <div style="padding: 12px 16px">
+          <button type="button" id="search-submit" class="btn" data-action="search-run">
+            Search rides
+          </button>
+        </div>
         <div class="chipgroup" id="search-chips">
           <button class="chip on" onclick="chipSel(this, 'search-chips')">All</button>
           <button class="chip" onclick="chipSel(this, 'search-chips')">Cheapest</button>
@@ -1730,7 +1758,7 @@
           <div class="secha">Sort ↕</div>
         </div>
         <div class="px rides-list rides-grid">
-          <div class="rc m2" onclick="go('detail')">
+          <div class="rc m2" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div class="av avg" style="width: 40px; height: 40px; font-size: 14px">PK</div>
@@ -1749,7 +1777,7 @@
               ><span class="etag">Eco</span>
             </div>
           </div>
-          <div class="rc m3" onclick="go('detail')">
+          <div class="rc m3" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div
@@ -1777,7 +1805,7 @@
               <span class="pill pp">Women-Preferred</span><span class="pill pb">Verified</span>
             </div>
           </div>
-          <div class="rc m4" onclick="go('detail')">
+          <div class="rc m4" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div class="av avo" style="width: 40px; height: 40px; font-size: 14px">MJ</div>
@@ -1795,7 +1823,7 @@
               <span class="pill po">1 seat left</span><span class="pill pn">No smoking</span>
             </div>
           </div>
-          <div class="rc m5" onclick="go('detail')">
+          <div class="rc m5" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div class="av avg" style="width: 40px; height: 40px; font-size: 14px">FZ</div>
@@ -1814,7 +1842,7 @@
               ><span class="etag">Eco</span>
             </div>
           </div>
-          <div class="rc m6" onclick="go('detail')">
+          <div class="rc m6" data-go="detail">
             <div class="rctop">
               <div class="avw">
                 <div class="av avo" style="width: 40px; height: 40px; font-size: 14px">DL</div>
@@ -2041,7 +2069,7 @@
       <div class="tabbar">
         <div class="tbbg"></div>
         <div class="tabs">
-          <button class="tb" onclick="go('home')">
+          <button class="tb" data-go="home">
             <div class="tbi">
               <svg
                 width="22"
@@ -2072,7 +2100,7 @@
             </div>
             <span class="tlbl">Search</span>
           </button>
-          <button class="tc" onclick="go('post')">
+          <button class="tc" data-go="post">
             <div class="tcb">
               <svg
                 width="24"
@@ -2087,7 +2115,7 @@
             </div>
             <span class="tclbl">Post</span>
           </button>
-          <button class="tb" onclick="go('inbox')">
+          <button class="tb" data-go="inbox">
             <div class="tbi" style="position: relative">
               <svg
                 width="22"
@@ -2103,7 +2131,7 @@
             </div>
             <span class="tlbl">Messages</span>
           </button>
-          <button class="tb" onclick="go('profile')">
+          <button class="tb" data-go="profile">
             <div class="tbi">
               <svg
                 width="22"
@@ -2129,7 +2157,7 @@
     <div class="scr" id="s-post">
       <div class="topbar">
         <div class="trow">
-          <button class="ib" onclick="go('home')" aria-label="Close">
+          <button class="ib" data-go="home" aria-label="Close">
             <svg
               width="16"
               height="16"
@@ -2166,24 +2194,35 @@
               >Upgrade to Pro for unlimited posting</span
             >
           </div>
-          <button class="ghost" style="font-size: 12px; font-weight: 700" onclick="go('sub')">
+          <button class="ghost" style="font-size: 12px; font-weight: 700" data-go="sub">
             Upgrade →
           </button>
         </div>
         <div class="px">
+          <label
+            class="fg"
+            style="display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px"
+            ><input type="checkbox" id="post-attestation" /><span class="tb2"
+              >I am offering a trip I already intend to take. Seat contributions are for cost
+              sharing only, not profit.</span
+            ></label
+          >
           <div class="fg m1">
-            <label class="inpl">From</label><input class="inp" type="text" value="London, ON" />
+            <label class="inpl">From</label
+            ><input id="post-origin" class="inp" type="text" value="London, ON" />
           </div>
           <div class="fg m1">
             <label class="inpl">To</label
-            ><input class="inp" type="text" placeholder="Destination city" />
+            ><input id="post-destination" class="inp" type="text" placeholder="Destination city" />
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px" class="m2">
             <div class="fg">
-              <label class="inpl">Date</label><input class="inp" type="date" value="2026-03-28" />
+              <label class="inpl">Date</label
+              ><input id="post-date" class="inp" type="date" value="2026-03-28" />
             </div>
             <div class="fg">
-              <label class="inpl">Departure</label><input class="inp" type="time" value="08:00" />
+              <label class="inpl">Departure</label
+              ><input id="post-departure" class="inp" type="time" value="08:00" />
             </div>
           </div>
           <div class="fg m2">
@@ -2191,7 +2230,15 @@
             <div class="step">
               <button class="sbtn" onclick="stepChg(this, -1)">−</button>
               <div class="sdv"></div>
-              <div class="sval">2</div>
+              <input
+                id="post-seats"
+                class="inp"
+                type="number"
+                value="2"
+                min="1"
+                max="8"
+                style="text-align: center; border: none; background: transparent"
+              />
               <div class="sdv"></div>
               <button class="sbtn" onclick="stepChg(this, 1)">+</button>
             </div>
@@ -2226,6 +2273,7 @@
                   letter-spacing: -1.5px;
                   padding: 8px 0;
                 "
+                id="post-price"
                 type="number"
                 value="25"
                 min="0"
@@ -2339,7 +2387,7 @@
             ></textarea>
           </div>
           <div class="m5" style="margin-bottom: 16px">
-            <button class="btn" onclick="showToast('Ride posted! 🎉')">
+            <button type="button" class="btn" data-action="post-submit">
               <svg
                 width="17"
                 height="17"
@@ -2362,7 +2410,7 @@
       <div class="tabbar">
         <div class="tbbg"></div>
         <div class="tabs">
-          <button class="tb" onclick="go('home')">
+          <button class="tb" data-go="home">
             <div class="tbi">
               <svg
                 width="22"
@@ -2378,7 +2426,7 @@
             </div>
             <span class="tlbl">Home</span>
           </button>
-          <button class="tb" onclick="go('search')">
+          <button class="tb" data-go="search">
             <div class="tbi">
               <svg
                 width="22"
@@ -2408,7 +2456,7 @@
             </div>
             <span class="tclbl">Post</span>
           </button>
-          <button class="tb" onclick="go('inbox')">
+          <button class="tb" data-go="inbox">
             <div class="tbi" style="position: relative">
               <svg
                 width="22"
@@ -2424,7 +2472,7 @@
             </div>
             <span class="tlbl">Messages</span>
           </button>
-          <button class="tb" onclick="go('profile')">
+          <button class="tb" data-go="profile">
             <div class="tbi">
               <svg
                 width="22"
@@ -2448,9 +2496,10 @@
      RIDE DETAIL
 ════════════════════════════════════ -->
     <div class="scr" id="s-detail">
+      <div id="ride-detail-content" class="px"></div>
       <div class="topbar tr">
         <div class="trow">
-          <button class="ib" onclick="go('home')" aria-label="Back">
+          <button class="ib" data-go="home" aria-label="Back">
             <svg
               width="18"
               height="18"
@@ -2847,7 +2896,7 @@
           <!-- SOS / Share -->
           <div style="display: flex; gap: 8px; padding: 0 16px 12px">
             <button
-              onclick="go('sos')"
+              data-go="sos"
               style="
                 flex: 1;
                 padding: 11px;
@@ -2922,7 +2971,7 @@
           </div>
           <!-- CTA -->
           <div class="px" style="padding-bottom: 20px">
-            <button class="btn" onclick="go('chat')">
+            <button class="btn" data-go="chat">
               <svg
                 width="17"
                 height="17"
@@ -3025,7 +3074,7 @@
       ></div>
       <div class="topbar">
         <div class="trow">
-          <button class="ib" onclick="go('inbox')" aria-label="Back">
+          <button class="ib" data-go="inbox" aria-label="Back">
             <svg
               width="18"
               height="18"
@@ -3409,7 +3458,7 @@
         </div>
         <div class="seclbl">Conversations</div>
         <div style="padding: 0 16px; display: flex; flex-direction: column; gap: 8px">
-          <div class="iitem m2" onclick="go('chat')">
+          <div class="iitem m2" data-go="chat">
             <div class="avw"><div class="av avg" style="width: 46px; height: 46px">PK</div></div>
             <div class="itx">
               <div class="irt">London → Toronto · Mar 28</div>
@@ -3451,7 +3500,7 @@
               <div class="iunrd">1</div>
             </div>
           </div>
-          <div class="iitem m5" onclick="go('chat')">
+          <div class="iitem m5" data-go="chat">
             <div class="av avo" style="width: 46px; height: 46px">DL</div>
             <div class="itx">
               <div class="irt">Toronto → Montréal · Apr 5</div>
@@ -3460,7 +3509,7 @@
             </div>
             <div class="imeta"><div class="itime">Mar 26</div></div>
           </div>
-          <div class="iitem m6" onclick="go('chat')">
+          <div class="iitem m6" data-go="chat">
             <div class="av avg" style="width: 46px; height: 46px">FZ</div>
             <div class="itx">
               <div class="irt">Ottawa → Montréal · Apr 12</div>
@@ -3469,7 +3518,7 @@
             </div>
             <div class="imeta"><div class="itime">Mar 24</div></div>
           </div>
-          <div class="iitem m7" onclick="go('chat')">
+          <div class="iitem m7" data-go="chat">
             <div class="av avo" style="width: 46px; height: 46px">NK</div>
             <div class="itx">
               <div class="irt">London → Toronto · Mar 28</div>
@@ -3487,7 +3536,7 @@
       <div class="tabbar">
         <div class="tbbg"></div>
         <div class="tabs">
-          <button class="tb" onclick="go('home')">
+          <button class="tb" data-go="home">
             <div class="tbi">
               <svg
                 width="22"
@@ -3503,7 +3552,7 @@
             </div>
             <span class="tlbl">Home</span>
           </button>
-          <button class="tb" onclick="go('search')">
+          <button class="tb" data-go="search">
             <div class="tbi">
               <svg
                 width="22"
@@ -3518,7 +3567,7 @@
             </div>
             <span class="tlbl">Search</span>
           </button>
-          <button class="tc" onclick="go('post')">
+          <button class="tc" data-go="post">
             <div class="tcb">
               <svg
                 width="24"
@@ -3549,7 +3598,7 @@
             </div>
             <span class="tlbl">Messages</span>
           </button>
-          <button class="tb" onclick="go('profile')">
+          <button class="tb" data-go="profile">
             <div class="tbi">
               <svg
                 width="22"
@@ -3576,7 +3625,7 @@
       <div class="topbar tr">
         <div class="trow">
           <div style="flex: 1"></div>
-          <button class="ib" onclick="go('notifs')" aria-label="Notifications">
+          <button class="ib" data-go="notifs" aria-label="Notifications">
             <svg
               width="15"
               height="15"
@@ -3590,7 +3639,7 @@
               <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
           </button>
-          <button class="ib" onclick="go('settings')" aria-label="Settings">
+          <button class="ib" data-go="settings" aria-label="Settings">
             <svg
               width="15"
               height="15"
@@ -3717,7 +3766,7 @@
         <div class="sechd"><div class="sechtl">Quick Actions</div></div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 16px 16px">
           <button
-            onclick="go('dashboard')"
+            data-go="dashboard"
             style="
               padding: 14px;
               border-radius: var(--r3);
@@ -3768,7 +3817,7 @@
             </div>
           </button>
           <button
-            onclick="go('history')"
+            data-go="history"
             style="
               padding: 14px;
               border-radius: var(--r3);
@@ -3813,7 +3862,7 @@
             </div>
           </button>
           <button
-            onclick="go('sub')"
+            data-go="sub"
             style="
               padding: 14px;
               border-radius: var(--r3);
@@ -3862,7 +3911,7 @@
             </div>
           </button>
           <button
-            onclick="go('settings')"
+            data-go="settings"
             style="
               padding: 14px;
               border-radius: var(--r3);
@@ -4042,7 +4091,7 @@
       <div class="tabbar">
         <div class="tbbg"></div>
         <div class="tabs">
-          <button class="tb" onclick="go('home')">
+          <button class="tb" data-go="home">
             <div class="tbi">
               <svg
                 width="22"
@@ -4058,7 +4107,7 @@
             </div>
             <span class="tlbl">Home</span>
           </button>
-          <button class="tb" onclick="go('search')">
+          <button class="tb" data-go="search">
             <div class="tbi">
               <svg
                 width="22"
@@ -4073,7 +4122,7 @@
             </div>
             <span class="tlbl">Search</span>
           </button>
-          <button class="tc" onclick="go('post')">
+          <button class="tc" data-go="post">
             <div class="tcb">
               <svg
                 width="24"
@@ -4088,7 +4137,7 @@
             </div>
             <span class="tclbl">Post</span>
           </button>
-          <button class="tb" onclick="go('inbox')">
+          <button class="tb" data-go="inbox">
             <div class="tbi" style="position: relative">
               <svg
                 width="22"
@@ -4130,7 +4179,7 @@
     <div class="scr" id="s-dashboard">
       <div class="topbar">
         <div class="trow">
-          <button class="ib" onclick="go('profile')" aria-label="Back">
+          <button class="ib" data-go="profile" aria-label="Back">
             <svg
               width="18"
               height="18"
@@ -4146,7 +4195,7 @@
           <div class="bttl">Driver Dashboard</div>
           <button
             class="ib"
-            onclick="go('post')"
+            data-go="post"
             aria-label="Post new ride"
             style="background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.3)"
           >
@@ -4252,7 +4301,7 @@
         <!-- Active rides -->
         <div class="seclbl">Your Active Rides</div>
         <div class="m2">
-          <div class="dride-card" onclick="go('detail')">
+          <div class="dride-card" data-go="detail">
             <div class="dride-top">
               <div
                 style="
@@ -4297,7 +4346,7 @@
               <span class="pill pb">ID Verified</span>
             </div>
           </div>
-          <div class="dride-card" onclick="go('detail')" style="margin-top: 10px">
+          <div class="dride-card" data-go="detail" style="margin-top: 10px">
             <div class="dride-top">
               <div
                 style="
@@ -4340,7 +4389,7 @@
               <span class="pill pn">No pets</span>
             </div>
           </div>
-          <div class="dride-card" onclick="go('detail')" style="margin-top: 10px">
+          <div class="dride-card" data-go="detail" style="margin-top: 10px">
             <div class="dride-top">
               <div
                 style="
@@ -4388,7 +4437,7 @@
         <!-- Past rides quick view -->
         <div class="sechd">
           <div class="sechtl">Past 30 Days</div>
-          <div class="secha" onclick="go('history')">Full history</div>
+          <div class="secha" data-go="history">Full history</div>
         </div>
         <div class="statsbar m3" style="margin-bottom: 16px">
           <div class="sblk">
@@ -4411,7 +4460,7 @@
       <div class="tabbar">
         <div class="tbbg"></div>
         <div class="tabs">
-          <button class="tb" onclick="go('home')">
+          <button class="tb" data-go="home">
             <div class="tbi">
               <svg
                 width="22"
@@ -4427,7 +4476,7 @@
             </div>
             <span class="tlbl">Home</span>
           </button>
-          <button class="tb" onclick="go('search')">
+          <button class="tb" data-go="search">
             <div class="tbi">
               <svg
                 width="22"
@@ -4442,7 +4491,7 @@
             </div>
             <span class="tlbl">Search</span>
           </button>
-          <button class="tc" onclick="go('post')">
+          <button class="tc" data-go="post">
             <div class="tcb">
               <svg
                 width="24"
@@ -4457,7 +4506,7 @@
             </div>
             <span class="tclbl">Post</span>
           </button>
-          <button class="tb" onclick="go('inbox')">
+          <button class="tb" data-go="inbox">
             <div class="tbi" style="position: relative">
               <svg
                 width="22"
@@ -4473,7 +4522,7 @@
             </div>
             <span class="tlbl">Messages</span>
           </button>
-          <button class="tb" onclick="go('profile')">
+          <button class="tb" data-go="profile">
             <div class="tbi">
               <svg
                 width="22"
@@ -4499,7 +4548,7 @@
     <div class="scr" id="s-notifs">
       <div class="topbar">
         <div class="trow">
-          <button class="ib" onclick="go('home')" id="notif-back" aria-label="Back">
+          <button class="ib" data-go="home" id="notif-back" aria-label="Back">
             <svg
               width="18"
               height="18"
@@ -4601,7 +4650,7 @@
             <div class="nitem-dot"></div>
           </div>
           <div class="sepln"></div>
-          <div class="nitem unrd" onclick="go('home')">
+          <div class="nitem unrd" data-go="home">
             <div class="nitem-ico" style="background: rgba(255, 255, 255, 0.12)">
               <svg
                 width="20"
@@ -4839,7 +4888,7 @@
     <div class="scr" id="s-history">
       <div class="topbar">
         <div class="trow">
-          <button class="ib" onclick="go('profile')" aria-label="Back">
+          <button class="ib" data-go="profile" aria-label="Back">
             <svg
               width="18"
               height="18"
@@ -5300,7 +5349,7 @@
     <div class="scr" id="s-settings">
       <div class="topbar">
         <div class="trow">
-          <button class="ib" onclick="go('profile')" aria-label="Back">
+          <button class="ib" data-go="profile" aria-label="Back">
             <svg
               width="18"
               height="18"
@@ -5564,7 +5613,7 @@
             </svg>
           </div>
           <div class="sepln"></div>
-          <div class="srow" onclick="go('sos')">
+          <div class="srow" data-go="sos">
             <div class="srow-ico" style="background: rgba(109, 109, 109, 0.12)">
               <svg
                 width="18"
@@ -5603,7 +5652,7 @@
         <!-- Subscription -->
         <div class="seclbl">Subscription</div>
         <div class="sgroup m3">
-          <div class="srow" onclick="go('sub')">
+          <div class="srow" data-go="sub">
             <div class="srow-ico" style="background: rgba(255, 255, 255, 0.12)">
               <svg
                 width="18"
@@ -5731,7 +5780,7 @@
         <!-- Sign out -->
         <div style="padding: 0 16px 32px; margin-top: 8px">
           <button
-            onclick="go('ob')"
+            data-go="ob"
             style="
               width: 100%;
               padding: 14px;
@@ -5774,7 +5823,7 @@
         "
       >
         <div class="trow">
-          <button class="ib" onclick="go('detail')" aria-label="Back">
+          <button class="ib" data-go="detail" aria-label="Back">
             <svg
               width="18"
               height="18"
@@ -5985,7 +6034,7 @@
     <div class="scr" id="s-sub">
       <div class="topbar">
         <div class="trow">
-          <button class="ib" onclick="go('profile')" aria-label="Back">
+          <button class="ib" data-go="profile" aria-label="Back">
             <svg
               width="18"
               height="18"

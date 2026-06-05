@@ -3,6 +3,7 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
+import cookieParser from 'cookie-parser'
 import { rateLimit } from 'express-rate-limit'
 
 import { env } from './config/env.js'
@@ -11,6 +12,10 @@ import { ridesRouter } from './routes/rides.js'
 import { chatRouter } from './routes/chat.js'
 import { seatRequestsRouter } from './routes/seatRequests.js'
 import { reportsRouter } from './routes/reports.js'
+import { blocksRouter } from './routes/blocks.js'
+import { subscriptionRouter } from './routes/subscription.js'
+import { adminRouter } from './routes/admin.js'
+import { routeAlertsRouter } from './routes/routeAlerts.js'
 import { errorHandler } from './middleware/errorHandler.js'
 
 const app = express()
@@ -45,6 +50,7 @@ app.use(
   }),
 )
 
+app.use(cookieParser())
 app.use(express.json({ limit: '64kb' }))
 
 app.use('/api/auth', authRouter)
@@ -52,6 +58,10 @@ app.use('/api/rides', ridesRouter)
 app.use('/api/chat', chatRouter)
 app.use('/api/seat-requests', seatRequestsRouter)
 app.use('/api/reports', reportsRouter)
+app.use('/api/blocks', blocksRouter)
+app.use('/api/subscription', subscriptionRouter)
+app.use('/api/admin', adminRouter)
+app.use('/api/route-alerts', routeAlertsRouter)
 
 app.get('/api/health', (_req, res) => {
   res.json({ data: { status: 'ok', timestamp: new Date().toISOString() } })

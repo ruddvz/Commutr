@@ -38,6 +38,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     const res = await fetch(`${API_BASE_URL}${path}`, {
       ...init,
       headers,
+      credentials: 'include',
       signal: controller.signal,
     })
 
