@@ -1,8 +1,9 @@
 .cm-card {
-  border: 1px solid var(--cm-line);
-  border-radius: var(--cm-radius-lg);
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: var(--cm-shadow-card);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #07160f;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
 }
 
 .cm-card--flat {
@@ -71,6 +72,22 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--cm-muted);
+}
+
+.cm-ride-card--compact .cm-ride-card__compact-top {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--cm-space-2);
+  align-items: center;
+}
+
+.cm-ride-card__route {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.cm-ride-card--compact .cm-ride-card__actions {
+  margin-top: var(--cm-space-3);
 }
 
 .cm-ride-card__actions {

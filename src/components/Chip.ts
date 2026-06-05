@@ -8,12 +8,14 @@ export function renderChip(
     group?: string
     value?: string
     pressed?: boolean
+    className?: string
   } = {},
 ): string {
   const active = opts.active || opts.pressed
+  const extra = opts.className ?? ''
   const attrs = [
     'type="button"',
-    `class="cm-chip${active ? ' cm-chip--active' : ''}"`,
+    `class="cm-chip${active ? ' cm-chip--active' : ''}${extra ? ` ${extra}` : ''}"`,
     active ? 'aria-pressed="true"' : 'aria-pressed="false"',
     opts.action ? `data-action="${opts.action}"` : '',
     opts.group ? `data-chip-group="${opts.group}"` : '',

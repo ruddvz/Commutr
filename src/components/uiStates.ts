@@ -26,12 +26,27 @@ export function showEmpty(
     </div>`
 }
 
+export function showCompactReconnect(
+  container: HTMLElement,
+  opts: { title?: string; body: string; showRetry?: boolean },
+): string {
+  const html = `
+    <div class="cm-reconnect-notice" role="status">
+      <p class="cm-reconnect-notice__title">${escapeHtml(opts.title ?? "Couldn't reach live rides")}</p>
+      <p class="cm-caption cm-muted">${escapeHtml(opts.body)}</p>
+      ${opts.showRetry !== false ? renderButton('Try again', { variant: 'secondary', action: 'retry-last', size: 'sm' }) : ''}
+    </div>`
+  container.insertAdjacentHTML('afterbegin', html)
+  return html
+}
+
 export function showError(container: HTMLElement, message: string): void {
   container.innerHTML = `
-    <div class="cm-empty cm-empty--error" role="alert">
-      <p class="cm-title-md">Something went wrong</p>
+    <div class="cm-card cm-reconnect-card" role="alert">
+      <p class="cm-reconnect-card__title">Live rides unavailable</p>
       <p class="cm-body cm-muted cm-mt-2">${escapeHtml(message)}</p>
-      ${renderButton('Try again', { variant: 'outline', action: 'retry-last' })}
+      <p class="cm-caption cm-muted cm-mt-2">Showing saved or sample rides when available.</p>
+      <div class="cm-mt-4">${renderButton('Retry', { variant: 'secondary', action: 'retry-last' })}</div>
     </div>`
 }
 

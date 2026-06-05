@@ -5,6 +5,7 @@ import { renderChip, renderChipRow } from '@/components/Chip'
 import { showEmpty } from '@/components/uiStates'
 import { go } from '@/utils/router'
 import type { ScreenRenderContext } from '@/app/screenRegistry'
+import { iconSearch } from '@/components/icons'
 import { escapeHtml } from '@/utils/dom'
 
 const CONVERSATIONS = [
@@ -33,7 +34,7 @@ let inboxFilter = 'All'
 export function renderInboxScreen({ container }: ScreenRenderContext): void {
   mountTopBar({
     title: 'Messages',
-    actions: `<button type="button" class="cm-icon-button" aria-label="Search messages">⌕</button>`,
+    actions: `<button type="button" class="cm-icon-button" aria-label="Search messages">${iconSearch()}</button>`,
   })
 
   container.className = 'cm-screen'

@@ -12,16 +12,19 @@ export function renderInputField(opts: {
   autocomplete?: string
   min?: string
   max?: string
+  variant?: 'default' | 'dark'
 }): string {
   const errorHtml = opts.error
     ? `<p class="cm-field-error" role="alert">${escapeHtml(opts.error)}</p>`
     : ''
   const helperHtml = opts.helper ? `<p class="cm-helper">${escapeHtml(opts.helper)}</p>` : ''
+  const inputClass = opts.variant === 'dark' ? 'cm-input cm-input--dark' : 'cm-input'
+  const labelClass = opts.variant === 'dark' ? 'cm-label cm-label--on-glass' : 'cm-label'
   const inputAttrs = [
     `id="${opts.id}"`,
     `name="${opts.id}"`,
     `type="${opts.type ?? 'text'}"`,
-    'class="cm-input"',
+    `class="${inputClass}"`,
     opts.value ? `value="${escapeHtml(opts.value)}"` : '',
     opts.placeholder ? `placeholder="${escapeHtml(opts.placeholder)}"` : '',
     opts.inputMode ? `inputmode="${opts.inputMode}"` : '',
@@ -35,7 +38,7 @@ export function renderInputField(opts: {
 
   return `
     <div class="cm-field">
-      <label class="cm-label" for="${opts.id}">${escapeHtml(opts.label)}</label>
+      <label class="${labelClass}" for="${opts.id}">${escapeHtml(opts.label)}</label>
       ${helperHtml}
       <input ${inputAttrs} />
       ${errorHtml}

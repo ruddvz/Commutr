@@ -1,73 +1,61 @@
 /* COMMUTR v5 - Service Worker
-   Strategy: Cache-first for static assets, network-first for navigation
+   Strategy: cache-first static assets, network-first navigation & API
 */
-const CACHE_NAME = 'commutr-v5-2'
-const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Mono:ital,wght@0,400;0,500&display=swap',
-]
+const CACHE_VERSION = 'commutr-v6'
+const STATIC_CACHE = `${CACHE_VERSION}-static`
+const STATIC_ASSETS = ['./', './index.html', './manifest.json']
 
-self.addEventListener('install', function (event) {
+self.addEventListener('install', (event) => {
   self.skipWaiting()
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(function (cache) {
-      return cache.addAll(
-        STATIC_ASSETS.filter(function (url) {
-          return !url.startsWith('https://')
-        }),
-      )
-    }),
-  )
+  event.waitUntil(caches.open(STATIC_CACHE).then((cache) => cache.addAll(STATIC_ASSETS)))
 })
 
-self.addEventListener('activate', function (event) {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then(function (keys) {
-        return Promise.all(
-          keys
-            .filter(function (key) {
-              return key !== CACHE_NAME
-            })
-            .map(function (key) {
-              return caches.delete(key)
-            }),
-        )
-      })
-      .then(function () {
-        return self.clients.claim()
-      }),
+      .then((keys) =>
+        Promise.all(
+          keys.filter((key) => !key.startsWith(CACHE_VERSION)).map((key) => caches.delete(key)),
+        ),
+      )
+      .then(() => self.clients.claim()),
   )
 })
 
-self.addEventListener('fetch', function (event) {
-  var url = new URL(event.request.url)
-
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url)
   if (url.origin !== self.location.origin) return
 
-  if (event.request.mode === 'navigate') {
+  if (url.pathname.includes('/api/')) {
     event.respondWith(
-      fetch(event.request).catch(function () {
-        return caches.match('/index.html')
-      }),
+      fetch(event.request).catch(() =>
+        caches
+          .match(event.request)
+          .then((cached) => cached ?? new Response('{"error":"offline"}', { status: 503 })),
+      ),
     )
     return
   }
 
+  if (event.request.mode === 'navigate') {
+    event.respondWith(fetch(event.request).catch(() => caches.match('./index.html')))
+    return
+  }
+
   event.respondWith(
-    caches.match(event.request).then(function (cached) {
+    caches.match(event.request).then((cached) => {
       if (cached) return cached
-      return fetch(event.request).then(function (response) {
+      return fetch(event.request).then((response) => {
         if (!response || response.status !== 200 || response.type !== 'basic') return response
-        var toCache = response.clone()
-        caches.open(CACHE_NAME).then(function (cache) {
-          cache.put(event.request, toCache)
-        })
+        const clone = response.clone()
+        caches.open(STATIC_CACHE).then((cache) => cache.put(event.request, clone))
         return response
       })
     }),
   )
+})
+
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting()
 })

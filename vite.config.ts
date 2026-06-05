@@ -2,8 +2,10 @@ import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const isGithubPages = process.env['GITHUB_PAGES'] === 'true'
+
 export default defineConfig({
-  base: '/Commutr/',
+  base: isGithubPages ? '/Commutr/' : '/Commutr/',
   root: '.',
   publicDir: 'public',
   resolve: {
@@ -22,16 +24,16 @@ export default defineConfig({
   },
   plugins: [
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       injectRegister: false,
       includeAssets: ['icons/*.svg'],
       manifest: {
-        name: 'COMMUTR — Fee-Free Carpooling',
-        short_name: 'COMMUTR',
+        name: 'Commutr',
+        short_name: 'Commutr',
         description:
-          'Find intercity carpooling rides across Canada. Zero booking fees, direct driver chat, verified profiles, and safer ride coordination.',
-        theme_color: '#1f7a4d',
-        background_color: '#f5f8f4',
+          'Find intercity carpooling rides across Canada. Zero booking fees, verified drivers, and safer ride coordination.',
+        theme_color: '#06120d',
+        background_color: '#06120d',
         display: 'standalone',
         orientation: 'portrait-primary',
         lang: 'en-CA',
@@ -52,6 +54,12 @@ export default defineConfig({
             purpose: 'any',
           },
           {
+            src: 'icons/icon-512.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'maskable',
+          },
+          {
             src: 'icons/apple-touch-icon.svg',
             sizes: '180x180',
             type: 'image/svg+xml',
@@ -61,6 +69,17 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,svg,woff2}'],
         navigateFallback: 'index.html',
+        runtimeCaching: [
+          {
+            urlPattern: /\/api\//,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'commutr-api',
+              networkTimeoutSeconds: 5,
+              expiration: { maxEntries: 32, maxAgeSeconds: 300 },
+            },
+          },
+        ],
       },
       devOptions: {
         enabled: false,

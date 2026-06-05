@@ -12,7 +12,7 @@ import { renderInputField } from '@/components/InputField'
 import { openBottomSheet, closeBottomSheet } from '@/components/BottomSheet'
 import { mountTopBar } from '@/components/TopBar'
 import { renderStickyActions } from '@/components/AppShell'
-import { showError } from '@/components/uiStates'
+import { isStaticDemo } from '@/config/runtime'
 import type { ScreenRenderContext } from '@/app/screenRegistry'
 import { escapeHtml } from '@/utils/dom'
 import { formatCAD, formatDateTime } from '@/utils/format'
@@ -104,12 +104,17 @@ export async function loadRideDetail(): Promise<void> {
     if (title)
       title.textContent = `${ride.origin.split(',')[0]} → ${ride.destination.split(',')[0]}`
   } catch {
-    showError(container, 'Could not load ride')
+    container.innerHTML = `
+      <div class="cm-card cm-reconnect-card" role="status">
+        <p class="cm-reconnect-card__title">Ride not found</p>
+        <p class="cm-body cm-muted cm-mt-2">This ride may have been removed. Browse available routes instead.</p>
+        <div class="cm-mt-4">${renderButton('Search rides', { variant: 'primary', go: 'search' })}</div>
+      </div>`
   }
 }
 
 export async function requestSeatOnDetail(): Promise<void> {
-  if (!authService.isAuthenticated()) {
+  if (!authService.isAuthenticated() && !isStaticDemo) {
     showToast('Sign in to request a seat')
     go('signup')
     return

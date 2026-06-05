@@ -19,10 +19,10 @@ test('bottom nav respects safe area layout', async ({ page }) => {
   await expect(page.locator('.cm-bottom-nav')).toBeVisible()
 })
 
-test('light-first theme tokens are applied', async ({ page }) => {
+test('dark theme tokens are applied', async ({ page }) => {
   await page.goto('./?screen=home')
-  const brand = await page.evaluate(() =>
-    getComputedStyle(document.documentElement).getPropertyValue('--cm-brand').trim(),
+  const bg = await page.evaluate(() =>
+    getComputedStyle(document.documentElement).getPropertyValue('--cm-bg').trim(),
   )
-  expect(brand).toBe('#1f7a4d')
+  expect(bg).toBe('#06120d')
 })

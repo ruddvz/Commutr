@@ -1,70 +1,67 @@
 :root {
-  /* Brand */
-  --cm-brand: #1f7a4d;
-  --cm-brand-strong: #145c39;
-  --cm-brand-soft: #e8f5ee;
-  --cm-brand-softer: #f3fbf6;
+  color-scheme: dark;
 
-  /* Accent */
-  --cm-accent: #2f80ed;
-  --cm-accent-soft: #eaf3ff;
-  --cm-warm: #f4b740;
-  --cm-warm-soft: #fff6df;
+  /* Core brand */
+  --cm-bg: #06120d;
+  --cm-bg-2: #091811;
+  --cm-bg-3: #0d2118;
+  --cm-bg-elevated: #0d2118;
+  --cm-ink: #f5fff9;
+  --cm-ink-2: #d6e6dc;
+  --cm-ink-soft: #d6e6dc;
+  --cm-muted: #91a399;
+  --cm-muted-2: #687970;
+  --cm-placeholder: #687970;
 
-  /* Backgrounds */
-  --cm-bg: #f5f8f4;
-  --cm-bg-elevated: #fbfcfa;
-  --cm-surface: #ffffff;
-  --cm-surface-soft: #f8faf7;
-  --cm-surface-tint: #eef6f1;
+  /* Surfaces */
+  --cm-glass: rgba(247, 255, 250, 0.88);
+  --cm-glass-strong: rgba(255, 255, 255, 0.94);
+  --cm-surface: rgba(255, 255, 255, 0.93);
+  --cm-surface-soft: rgba(255, 255, 255, 0.88);
+  --cm-surface-dark: rgba(11, 29, 21, 0.84);
+  --cm-surface-dark-2: rgba(15, 40, 29, 0.92);
+  --cm-surface-mint: #e7f4ec;
+  --cm-surface-mint-2: #d4eadf;
+  --cm-surface-tint: rgba(32, 138, 83, 0.12);
+  --cm-border: rgba(255, 255, 255, 0.13);
+  --cm-border-dark: rgba(8, 25, 17, 0.18);
+  --cm-line: rgba(255, 255, 255, 0.13);
+  --cm-line-strong: rgba(255, 255, 255, 0.2);
+  --cm-divider: rgba(255, 255, 255, 0.08);
 
-  /* Text */
-  --cm-ink: #0d1712;
-  --cm-ink-2: #2c3a33;
-  --cm-muted: #6b7770;
-  --cm-muted-2: #93a09a;
-  --cm-placeholder: #a3aca7;
-
-  /* Lines */
-  --cm-line: #dde6df;
-  --cm-line-strong: #c6d4cb;
-  --cm-divider: rgba(13, 23, 18, 0.08);
-
-  /* Feedback */
-  --cm-success: #178a52;
-  --cm-success-soft: #e8f7ef;
-  --cm-warning: #b7791f;
-  --cm-warning-soft: #fff4d8;
-  --cm-danger: #d14343;
-  --cm-danger-soft: #fdecec;
-  --cm-info: #2563eb;
-  --cm-info-soft: #eff6ff;
-
-  /* Radius */
-  --cm-radius-xs: 10px;
-  --cm-radius-sm: 14px;
-  --cm-radius-md: 18px;
-  --cm-radius-lg: 22px;
-  --cm-radius-xl: 28px;
-  --cm-radius-2xl: 34px;
-  --cm-radius-pill: 999px;
-
-  /* Shadows */
-  --cm-shadow-card: 0 10px 30px rgba(15, 44, 31, 0.08);
-  --cm-shadow-float: 0 18px 50px rgba(15, 44, 31, 0.16);
-  --cm-shadow-soft: 0 1px 2px rgba(15, 44, 31, 0.04), 0 8px 24px rgba(15, 44, 31, 0.08);
+  /* Actions */
+  --cm-brand: #208a53;
+  --cm-brand-strong: #187a48;
+  --cm-brand-soft: #d7f1e4;
+  --cm-brand-softer: rgba(32, 138, 83, 0.14);
+  --cm-primary: #208a53;
+  --cm-primary-strong: #187a48;
+  --cm-primary-soft: #d7f1e4;
+  --cm-primary-tint: #a7dfc1;
+  --cm-accent: #e7c36a;
+  --cm-accent-soft: rgba(231, 195, 106, 0.16);
+  --cm-warm: #e7c36a;
+  --cm-warm-soft: rgba(231, 195, 106, 0.14);
+  --cm-danger: #ff5a63;
+  --cm-danger-soft: #ffe1e4;
+  --cm-warning: #f0b64f;
+  --cm-warning-soft: rgba(240, 182, 79, 0.16);
+  --cm-success: #30c477;
+  --cm-success-soft: rgba(48, 196, 119, 0.16);
+  --cm-info: #73b7ff;
+  --cm-info-soft: rgba(115, 183, 255, 0.16);
 
   /* Typography */
   --cm-font:
     -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', Inter, system-ui, sans-serif;
   --cm-mono: 'SF Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
-
-  /* Layout */
-  --cm-page-max: 1120px;
-  --cm-mobile-pad: 16px;
-  --cm-desktop-pad: 28px;
-  --cm-bottom-nav-h: 78px;
-  --cm-topbar-h: 62px;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 15px;
+  --fs-lg: 17px;
+  --fs-xl: 22px;
+  --fs-2xl: 28px;
+  --fs-3xl: 34px;
 
   /* Spacing */
   --cm-space-1: 4px;
@@ -78,6 +75,30 @@
   --cm-space-10: 40px;
   --cm-space-12: 48px;
 
+  /* iOS squircle radii */
+  --cm-radius-xs: 10px;
+  --cm-radius-sm: 14px;
+  --cm-radius-md: 18px;
+  --cm-radius-lg: 24px;
+  --cm-radius-xl: 30px;
+  --cm-radius-2xl: 36px;
+  --cm-radius-pill: 999px;
+
+  /* Shadows */
+  --cm-shadow-soft: 0 16px 40px rgba(0, 0, 0, 0.22);
+  --cm-shadow-card: 0 12px 30px rgba(0, 0, 0, 0.18);
+  --cm-shadow-float: 0 22px 60px rgba(0, 0, 0, 0.3);
+  --cm-shadow-inner-line: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+
+  /* Layout */
+  --cm-page-max: 1120px;
+  --cm-mobile-pad: 16px;
+  --cm-tablet-pad: 28px;
+  --cm-desktop-pad: 32px;
+  --cm-topbar-h: 72px;
+  --cm-bottom-nav-h: 82px;
+  --cm-tap-min: 44px;
+
   /* Safe area */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -86,21 +107,8 @@
 
   /* Motion */
   --cm-transition: 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root[data-theme='system'] {
-    --cm-bg: #07100b;
-    --cm-bg-elevated: #0d1712;
-    --cm-surface: #101b15;
-    --cm-surface-soft: #132019;
-    --cm-surface-tint: #17281f;
-    --cm-ink: #f4faf6;
-    --cm-ink-2: #d8e3dc;
-    --cm-muted: #9caaa2;
-    --cm-muted-2: #75847b;
-    --cm-line: rgba(255, 255, 255, 0.1);
-    --cm-line-strong: rgba(255, 255, 255, 0.16);
-    --cm-brand-soft: rgba(31, 122, 77, 0.18);
-  }
+  --ease-ios: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 140ms;
+  --dur-med: 220ms;
+  --dur-slow: 360ms;
 }
