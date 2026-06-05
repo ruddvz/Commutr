@@ -7,6 +7,7 @@ import { rideRepository } from '../repositories/rideRepository.js'
 import { prisma } from '../db/client.js'
 import { createSeatRequestSchema } from '../../src/contracts/schemas/seatRequestSchema.js'
 import { createSeatRequestForRide } from './seatRequests.js'
+import { estimateDistanceKm, validatePricePerSeat } from '../lib/priceGuardrails.js'
 
 export const ridesRouter = Router()
 
@@ -59,6 +60,18 @@ ridesRouter.post(
             'FORBIDDEN',
           )
         }
+      }
+
+      const body = req.body as {
+        origin: string
+        destination: string
+        pricePerSeat: number
+        seatsTotal: number
+      }
+      const distanceKm = estimateDistanceKm(body.origin, body.destination)
+      const priceCheck = validatePricePerSeat(body.pricePerSeat, distanceKm)
+      if (!priceCheck.ok) {
+        throw new AppError(400, priceCheck.warning ?? 'Invalid price', 'VALIDATION_ERROR')
       }
 
       const ride = await rideRepository.create(userId, req.body)

@@ -6,8 +6,10 @@ export interface User {
   avatarUrl?: string
   bio?: string
   verified: boolean
-  rating: number
+  rating?: number
+  ratingAvg?: number
   ratingCount: number
+  role?: string
   createdAt: string
 }
 

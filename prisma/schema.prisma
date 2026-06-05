@@ -27,6 +27,7 @@ model User {
   blocksGiven   Block[]                   @relation("blocksGiven")
   blocksReceived Block[]                  @relation("blocksReceived")
   subscription  Subscription?
+  routeAlerts   RouteAlert[]
 }
 
 model Ride {
@@ -123,6 +124,20 @@ model Report {
   details      String?
   status       String   @default("open")
   createdAt    DateTime @default(now())
+}
+
+model RouteAlert {
+  id          String   @id @default(uuid())
+  userId      String
+  origin      String
+  destination String
+  dateWindow  String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Block {

@@ -9,6 +9,7 @@ import { registerSchema, loginSchema } from '../../src/contracts/schemas/userSch
 import { env } from '../config/env.js'
 import { Prisma } from '@prisma/client'
 import { userRepository, toSafeUser } from '../repositories/userRepository.js'
+import { setSessionCookie, clearSessionCookie } from '../lib/sessionCookie.js'
 
 export const authRouter = Router()
 
@@ -29,6 +30,7 @@ authRouter.post('/register', validateBody(registerSchema), async (req, res, next
     const passwordHash = await bcrypt.hash(password, env.BCRYPT_ROUNDS)
     const user = await userRepository.create({ name, email, passwordHash })
     const token = signToken(user.id)
+    setSessionCookie(res, token)
     res.status(201).json({ data: { ...toSafeUser(user), token } })
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
@@ -49,6 +51,7 @@ authRouter.post('/login', validateBody(loginSchema), async (req, res, next) => {
     }
 
     const token = signToken(user.id)
+    setSessionCookie(res, token)
     res.json({ data: { ...toSafeUser(user), token } })
   } catch (err) {
     next(err)
@@ -68,5 +71,6 @@ authRouter.get('/me', requireAuth, async (req: AuthRequest, res, next) => {
 })
 
 authRouter.post('/logout', (_req, res) => {
+  clearSessionCookie(res)
   res.json({ data: { ok: true } })
 })
