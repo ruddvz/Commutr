@@ -1,0 +1,66 @@
+/* COMMUTR design tokens — iOS-first PWA */
+:root {
+  --cm-bg: #050607;
+  --cm-bg-2: #0b0d10;
+  --cm-surface: rgba(255, 255, 255, 0.075);
+  --cm-surface-2: rgba(255, 255, 255, 0.11);
+  --cm-card: #101317;
+  --cm-card-raised: #151a20;
+  --cm-line: rgba(255, 255, 255, 0.1);
+  --cm-line-strong: rgba(255, 255, 255, 0.18);
+
+  --cm-text: #f7f8f8;
+  --cm-text-2: #c8ced6;
+  --cm-muted: #8f99a8;
+
+  --cm-accent: #ccff00;
+  --cm-accent-2: #b8f500;
+  --cm-accent-soft: rgba(204, 255, 0, 0.14);
+
+  --cm-green: #21d07a;
+  --cm-yellow: #ffd166;
+  --cm-red: #ff5d6c;
+  --cm-blue: #59a6ff;
+  --cm-purple: #a88cff;
+
+  --cm-radius-xs: 10px;
+  --cm-radius-sm: 14px;
+  --cm-radius-md: 18px;
+  --cm-radius-lg: 24px;
+  --cm-radius-xl: 30px;
+  --cm-radius-pill: 999px;
+
+  --cm-shadow-card: 0 18px 60px rgba(0, 0, 0, 0.35);
+  --cm-shadow-float: 0 18px 55px rgba(0, 0, 0, 0.55);
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+.app-shell {
+  min-height: 100svh;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+
+.bottom-nav,
+.bnav {
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 0px));
+}
+
+.screen-scroll,
+.scr {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

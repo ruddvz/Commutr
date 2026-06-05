@@ -10,6 +10,7 @@
 
 import './styles/main.css'
 
+import { registerServiceWorker } from './utils/pwa'
 import { go, updateNavState } from './utils/router'
 import { bindScrollMorph, bindScrollAwareTabbars } from './components/navigation'
 import { showToast } from './components/toast'
@@ -82,11 +83,4 @@ function init(): void {
 
 document.addEventListener('DOMContentLoaded', init)
 
-// ─── Service Worker registration ─────────────────────────────────────────────
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((err) => {
-      console.warn('SW registration failed:', err)
-    })
-  })
-}
+registerServiceWorker()

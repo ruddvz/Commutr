@@ -1,8 +1,21 @@
 import { byId, qsa, screenElement } from './dom'
 
 export const SCREEN_IDS = [
-  'ob', 'signup', 'home', 'search', 'post', 'detail', 'chat',
-  'inbox', 'profile', 'dashboard', 'notifs', 'history', 'settings', 'sos', 'sub',
+  'ob',
+  'signup',
+  'home',
+  'search',
+  'post',
+  'detail',
+  'chat',
+  'inbox',
+  'profile',
+  'dashboard',
+  'notifs',
+  'history',
+  'settings',
+  'sos',
+  'sub',
 ] as const
 
 export type ScreenId = (typeof SCREEN_IDS)[number]
@@ -48,19 +61,19 @@ export function go(target: ScreenId): void {
   // Hide all screens
   SCREEN_IDS.forEach((id) => {
     try {
-    screenElement(id).classList.remove('on')
-    screenElement(id).style.display = 'none'
-  } catch {
-    // Screen element may not exist in DOM yet
-  }
-})
+      screenElement(id).classList.remove('on')
+      screenElement(id).style.display = 'none'
+    } catch {
+      // Screen element may not exist in DOM yet
+    }
+  })
 
-// Show target screen
-try {
-  const el = screenElement(target)
-  el.classList.add('on')
-  el.style.display = 'flex'
-} catch {
+  // Show target screen
+  try {
+    const el = screenElement(target)
+    el.classList.add('on')
+    el.style.display = 'flex'
+  } catch {
     console.warn(`Screen not found: ${target}`)
     return
   }

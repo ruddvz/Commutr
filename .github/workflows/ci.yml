@@ -11,35 +11,44 @@ jobs:
     name: Type-check, lint, test & build
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          node-version: 20
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm exec prisma generate
 
       - name: Type check
-        run: npm run typecheck
+        run: pnpm typecheck
 
       - name: Lint
-        run: npm run lint:check
+        run: pnpm lint:check
 
       - name: Format check
-        run: npm run format:check
+        run: pnpm format:check
 
       - name: Run tests with coverage
-        run: npm run test:coverage
+        run: pnpm test:coverage
+        env:
+          NODE_ENV: test
+          JWT_SECRET: test-jwt-secret-at-least-32-characters-long
+          DATABASE_URL: file:./test.db
 
       - name: Build
-        run: npm run build
+        run: pnpm build
         env:
           NODE_ENV: production
+          JWT_SECRET: ci-build-jwt-secret-at-least-32-chars-long
+          DATABASE_URL: file:./data/commutr.db

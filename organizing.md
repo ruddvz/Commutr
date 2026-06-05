@@ -35,21 +35,21 @@
 
 ### What claude-organizer Provides (Patterns to Adopt)
 
-| Pattern | Description | How It Applies to COMMUTR |
-|---------|-------------|---------------------------|
-| Modular `src/` structure | `src/cli/`, `src/config/`, `src/contracts/`, `src/hooks/`, `src/organizer/`, `src/providers/` | Split monolith JS into modules under `src/` |
-| TypeScript with strict config | `tsconfig.json`, `tsconfig.build.json` | Add TypeScript for type safety |
-| Zod schemas for validation | `src/contracts/schemas/`, `src/validation/models/` | Use Zod for form/API input validation |
-| Contracts layer (types + schemas) | Separate types from runtime validators | Define interfaces for rides, users, messages |
-| Config management | `src/config/Config.ts`, `.env.example` | Centralize app config, API URLs, feature flags |
-| Category-based file organization | `docs/testing/`, `docs/analysis/`, `scripts/checks/` | Organize docs, scripts, and test output |
-| PostToolUse hooks | Auto-organize files after Claude edits | Keep workspace clean during development |
-| CI/CD with GitHub Actions | `.github/workflows/` | Automate build, lint, test on push/PR |
-| Vitest for testing | `vitest.config.*`, `test/` | Unit + integration tests for all modules |
-| ESLint v9 + Prettier | `eslint.config.js`, `.prettierrc` | Consistent code style |
-| Husky + lint-staged | `.husky/`, `lint-staged` config in `package.json` | Pre-commit quality gates |
-| Comprehensive skip patterns | Protect README, LICENSE, configs from auto-move | Safe defaults for file organization |
-| Organization logging | `docs/organization-log.json` | Audit trail for file moves |
+| Pattern                           | Description                                                                                   | How It Applies to COMMUTR                      |
+| --------------------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| Modular `src/` structure          | `src/cli/`, `src/config/`, `src/contracts/`, `src/hooks/`, `src/organizer/`, `src/providers/` | Split monolith JS into modules under `src/`    |
+| TypeScript with strict config     | `tsconfig.json`, `tsconfig.build.json`                                                        | Add TypeScript for type safety                 |
+| Zod schemas for validation        | `src/contracts/schemas/`, `src/validation/models/`                                            | Use Zod for form/API input validation          |
+| Contracts layer (types + schemas) | Separate types from runtime validators                                                        | Define interfaces for rides, users, messages   |
+| Config management                 | `src/config/Config.ts`, `.env.example`                                                        | Centralize app config, API URLs, feature flags |
+| Category-based file organization  | `docs/testing/`, `docs/analysis/`, `scripts/checks/`                                          | Organize docs, scripts, and test output        |
+| PostToolUse hooks                 | Auto-organize files after Claude edits                                                        | Keep workspace clean during development        |
+| CI/CD with GitHub Actions         | `.github/workflows/`                                                                          | Automate build, lint, test on push/PR          |
+| Vitest for testing                | `vitest.config.*`, `test/`                                                                    | Unit + integration tests for all modules       |
+| ESLint v9 + Prettier              | `eslint.config.js`, `.prettierrc`                                                             | Consistent code style                          |
+| Husky + lint-staged               | `.husky/`, `lint-staged` config in `package.json`                                             | Pre-commit quality gates                       |
+| Comprehensive skip patterns       | Protect README, LICENSE, configs from auto-move                                               | Safe defaults for file organization            |
+| Organization logging              | `docs/organization-log.json`                                                                  | Audit trail for file moves                     |
 
 ---
 
@@ -232,6 +232,7 @@ COMMUTR-v5/
 ### Steps
 
 - [ ] **1.1** Create the directory tree:
+
   ```
   mkdir -p src/{config,contracts/types,contracts/schemas,screens,components,services,utils,styles}
   mkdir -p server/{config,routes,middleware,models,services}
@@ -254,6 +255,7 @@ COMMUTR-v5/
   - Keep the shell: `<head>`, SVG defs, nav, `<div id="app">`, bottom nav, script tag
 
 - [ ] **1.4** Create `.gitignore` with comprehensive patterns (from claude-organizer's Config.ts skip patterns):
+
   ```
   node_modules/
   dist/
@@ -318,6 +320,7 @@ COMMUTR-v5/
   - Animations → `src/styles/animations.css`
 
 - [ ] **2.5** Create the main entry point `src/index.ts`:
+
   ```typescript
   import './styles/base.css'
   import './styles/layout.css'
@@ -359,6 +362,7 @@ COMMUTR-v5/
 ### Steps
 
 - [ ] **3.1** Install backend dependencies:
+
   ```
   npm install express cors helmet dotenv zod jsonwebtoken bcryptjs
   npm install -D @types/express @types/cors @types/jsonwebtoken @types/bcryptjs
@@ -413,11 +417,13 @@ COMMUTR-v5/
 ### Steps
 
 - [ ] **4.1** Install build tools:
+
   ```
   npm install -D vite typescript tsx concurrently
   ```
 
 - [ ] **4.2** Create `tsconfig.json`:
+
   ```json
   {
     "compilerOptions": {
@@ -447,6 +453,7 @@ COMMUTR-v5/
 - [ ] **4.3** Create `tsconfig.build.json` (extends base, excludes tests).
 
 - [ ] **4.4** Create `vite.config.ts`:
+
   ```typescript
   import { defineConfig } from 'vite'
   import { resolve } from 'path'
@@ -481,11 +488,13 @@ COMMUTR-v5/
 ### Steps
 
 - [ ] **5.1** Install claude-organize:
+
   ```
   npm install -g claude-organize
   ```
 
 - [ ] **5.2** Create `.claude/settings.json` with PostToolUse hook:
+
   ```json
   {
     "hooks": {
@@ -505,6 +514,7 @@ COMMUTR-v5/
   ```
 
 - [ ] **5.3** Create `.env` with organization settings:
+
   ```
   CLAUDE_ORGANIZE_DEBUG=false
   CLAUDE_ORGANIZE_BYPASS=false
@@ -522,6 +532,7 @@ COMMUTR-v5/
 ### Steps
 
 - [ ] **6.1** Install linting/formatting tools:
+
   ```
   npm install -D eslint @eslint/js @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint-config-prettier prettier husky lint-staged
   ```
@@ -533,6 +544,7 @@ COMMUTR-v5/
   - Custom rules for COMMUTR conventions
 
 - [ ] **6.3** Create `.prettierrc`:
+
   ```json
   {
     "semi": false,
@@ -544,6 +556,7 @@ COMMUTR-v5/
   ```
 
 - [ ] **6.4** Create `.prettierignore`:
+
   ```
   dist/
   coverage/
@@ -553,6 +566,7 @@ COMMUTR-v5/
   ```
 
 - [ ] **6.5** Add lint-staged to `package.json`:
+
   ```json
   {
     "lint-staged": {
@@ -563,12 +577,14 @@ COMMUTR-v5/
   ```
 
 - [ ] **6.6** Set up Husky pre-commit hook:
+
   ```
   npx husky init
   echo "npx lint-staged" > .husky/pre-commit
   ```
 
 - [ ] **6.7** Create `.github/workflows/ci.yml`:
+
   ```yaml
   name: CI
   on: [push, pull_request]
@@ -610,11 +626,13 @@ COMMUTR-v5/
 ### Steps
 
 - [ ] **7.1** Install testing tools:
+
   ```
   npm install -D vitest @vitest/coverage-v8 @vitest/ui
   ```
 
 - [ ] **7.2** Create `vitest.config.ts`:
+
   ```typescript
   import { defineConfig } from 'vitest/config'
   import { resolve } from 'path'
@@ -637,6 +655,7 @@ COMMUTR-v5/
   ```
 
 - [ ] **7.3** Add test scripts to `package.json`:
+
   ```json
   {
     "scripts": {
@@ -672,13 +691,16 @@ COMMUTR-v5/
 ### Steps
 
 - [ ] **8.1** Create `CLAUDE.md` — instructions for Claude Code sessions:
+
   ```markdown
   # COMMUTR v5
 
   ## Project Overview
+
   Canadian intercity carpooling PWA with TypeScript frontend + Express backend.
 
   ## Commands
+
   - `npm run dev` — Start Vite dev server (frontend)
   - `npm run dev:server` — Start Express API (backend)
   - `npm run dev:all` — Run both concurrently
@@ -687,12 +709,14 @@ COMMUTR-v5/
   - `npm run lint` — Lint and auto-fix
 
   ## Architecture
+
   - Frontend: Vite + TypeScript, modular screens in src/screens/
   - Backend: Express + TypeScript in server/
   - Validation: Zod schemas in src/contracts/schemas/
   - Tests: Vitest in test/
 
   ## Conventions
+
   - DO NOT create scripts in root directory
   - Put test files in test/, not alongside source
   - All new files must be TypeScript (.ts)
@@ -700,6 +724,7 @@ COMMUTR-v5/
   - Screen modules export init(), render(), destroy()
 
   ## File Organization
+
   Files are automatically organized by claude-organize hooks.
   Protected files: README.md, LICENSE, CLAUDE.md, package.json, configs
   ```
@@ -726,121 +751,121 @@ This is the execution order for actually moving/creating files:
 
 ### Round 1 — Infrastructure (no code changes)
 
-| # | Action | Source | Destination |
-|---|--------|--------|-------------|
-| 1 | Create | — | `.gitignore` |
-| 2 | Create | — | `.env.example` |
-| 3 | Create | — | `CLAUDE.md` |
-| 4 | Create | — | `tsconfig.json` |
-| 5 | Create | — | `tsconfig.build.json` |
-| 6 | Create | — | `vite.config.ts` |
-| 7 | Create | — | `vitest.config.ts` |
-| 8 | Create | — | `.prettierrc` |
-| 9 | Create | — | `.prettierignore` |
-| 10 | Create | — | `eslint.config.js` |
-| 11 | Update | `package.json` | Add all deps, scripts |
-| 12 | Run | — | `npm install` |
+| #   | Action | Source         | Destination           |
+| --- | ------ | -------------- | --------------------- |
+| 1   | Create | —              | `.gitignore`          |
+| 2   | Create | —              | `.env.example`        |
+| 3   | Create | —              | `CLAUDE.md`           |
+| 4   | Create | —              | `tsconfig.json`       |
+| 5   | Create | —              | `tsconfig.build.json` |
+| 6   | Create | —              | `vite.config.ts`      |
+| 7   | Create | —              | `vitest.config.ts`    |
+| 8   | Create | —              | `.prettierrc`         |
+| 9   | Create | —              | `.prettierignore`     |
+| 10  | Create | —              | `eslint.config.js`    |
+| 11  | Update | `package.json` | Add all deps, scripts |
+| 12  | Run    | —              | `npm install`         |
 
 ### Round 2 — Static Assets
 
-| # | Action | Source | Destination |
-|---|--------|--------|-------------|
-| 13 | Move | `icons/*` | `public/icons/*` |
-| 14 | Move | `manifest.json` | `public/manifest.json` |
-| 15 | Move | `sw.js` | `public/sw.js` |
-| 16 | Update | `sw.js` | Fix cache paths for new structure |
+| #   | Action | Source          | Destination                       |
+| --- | ------ | --------------- | --------------------------------- |
+| 13  | Move   | `icons/*`       | `public/icons/*`                  |
+| 14  | Move   | `manifest.json` | `public/manifest.json`            |
+| 15  | Move   | `sw.js`         | `public/sw.js`                    |
+| 16  | Update | `sw.js`         | Fix cache paths for new structure |
 
 ### Round 3 — Frontend Source Extraction
 
-| # | Action | Source | Destination |
-|---|--------|--------|-------------|
-| 17 | Extract | `app.js` → DOM utils | `src/utils/dom.ts` |
-| 18 | Extract | `app.js` → router | `src/utils/router.ts` |
-| 19 | Extract | `app.js` → toast | `src/components/toast.ts` |
-| 20 | Extract | `app.js` → onboarding | `src/screens/onboarding.ts` |
-| 21 | Extract | `app.js` → each screen | `src/screens/*.ts` (13 more) |
-| 22 | Extract | `app.js` → components | `src/components/*.ts` |
-| 23 | Create | — | `src/index.ts` (entry) |
-| 24 | Create | — | `src/config/constants.ts` |
+| #   | Action  | Source                 | Destination                  |
+| --- | ------- | ---------------------- | ---------------------------- |
+| 17  | Extract | `app.js` → DOM utils   | `src/utils/dom.ts`           |
+| 18  | Extract | `app.js` → router      | `src/utils/router.ts`        |
+| 19  | Extract | `app.js` → toast       | `src/components/toast.ts`    |
+| 20  | Extract | `app.js` → onboarding  | `src/screens/onboarding.ts`  |
+| 21  | Extract | `app.js` → each screen | `src/screens/*.ts` (13 more) |
+| 22  | Extract | `app.js` → components  | `src/components/*.ts`        |
+| 23  | Create  | —                      | `src/index.ts` (entry)       |
+| 24  | Create  | —                      | `src/config/constants.ts`    |
 
 ### Round 4 — CSS Modularization
 
-| # | Action | Source | Destination |
-|---|--------|--------|-------------|
-| 25 | Extract | `style.css` → variables & reset | `src/styles/base.css` |
-| 26 | Extract | `style.css` → layout | `src/styles/layout.css` |
-| 27 | Extract | `style.css` → components | `src/styles/components.css` |
-| 28 | Extract | `style.css` → screens | `src/styles/screens.css` |
-| 29 | Extract | `style.css` → nav | `src/styles/navigation.css` |
-| 30 | Extract | `style.css` → animations | `src/styles/animations.css` |
+| #   | Action  | Source                          | Destination                 |
+| --- | ------- | ------------------------------- | --------------------------- |
+| 25  | Extract | `style.css` → variables & reset | `src/styles/base.css`       |
+| 26  | Extract | `style.css` → layout            | `src/styles/layout.css`     |
+| 27  | Extract | `style.css` → components        | `src/styles/components.css` |
+| 28  | Extract | `style.css` → screens           | `src/styles/screens.css`    |
+| 29  | Extract | `style.css` → nav               | `src/styles/navigation.css` |
+| 30  | Extract | `style.css` → animations        | `src/styles/animations.css` |
 
 ### Round 5 — Types & Contracts
 
-| # | Action | Source | Destination |
-|---|--------|--------|-------------|
-| 31 | Create | — | `src/contracts/types/Ride.ts` |
-| 32 | Create | — | `src/contracts/types/User.ts` |
-| 33 | Create | — | `src/contracts/types/Message.ts` |
-| 34 | Create | — | `src/contracts/types/Booking.ts` |
-| 35 | Create | — | `src/contracts/types/Screen.ts` |
-| 36 | Create | — | `src/contracts/schemas/rideSchema.ts` |
-| 37 | Create | — | `src/contracts/schemas/userSchema.ts` |
-| 38 | Create | — | `src/contracts/schemas/searchSchema.ts` |
+| #   | Action | Source | Destination                             |
+| --- | ------ | ------ | --------------------------------------- |
+| 31  | Create | —      | `src/contracts/types/Ride.ts`           |
+| 32  | Create | —      | `src/contracts/types/User.ts`           |
+| 33  | Create | —      | `src/contracts/types/Message.ts`        |
+| 34  | Create | —      | `src/contracts/types/Booking.ts`        |
+| 35  | Create | —      | `src/contracts/types/Screen.ts`         |
+| 36  | Create | —      | `src/contracts/schemas/rideSchema.ts`   |
+| 37  | Create | —      | `src/contracts/schemas/userSchema.ts`   |
+| 38  | Create | —      | `src/contracts/schemas/searchSchema.ts` |
 
 ### Round 6 — Backend
 
-| # | Action | Source | Destination |
-|---|--------|--------|-------------|
-| 39 | Create | — | `server/index.ts` |
-| 40 | Create | — | `server/routes/authRoutes.ts` |
-| 41 | Create | — | `server/routes/rideRoutes.ts` |
-| 42 | Create | — | `server/routes/bookingRoutes.ts` |
-| 43 | Create | — | `server/routes/chatRoutes.ts` |
-| 44 | Create | — | `server/routes/userRoutes.ts` |
-| 45 | Create | — | `server/middleware/auth.ts` |
-| 46 | Create | — | `server/middleware/validation.ts` |
-| 47 | Create | — | `server/middleware/rateLimit.ts` |
-| 48 | Create | — | `server/middleware/errorHandler.ts` |
+| #   | Action | Source | Destination                         |
+| --- | ------ | ------ | ----------------------------------- |
+| 39  | Create | —      | `server/index.ts`                   |
+| 40  | Create | —      | `server/routes/authRoutes.ts`       |
+| 41  | Create | —      | `server/routes/rideRoutes.ts`       |
+| 42  | Create | —      | `server/routes/bookingRoutes.ts`    |
+| 43  | Create | —      | `server/routes/chatRoutes.ts`       |
+| 44  | Create | —      | `server/routes/userRoutes.ts`       |
+| 45  | Create | —      | `server/middleware/auth.ts`         |
+| 46  | Create | —      | `server/middleware/validation.ts`   |
+| 47  | Create | —      | `server/middleware/rateLimit.ts`    |
+| 48  | Create | —      | `server/middleware/errorHandler.ts` |
 
 ### Round 7 — Frontend Services
 
-| # | Action | Source | Destination |
-|---|--------|--------|-------------|
-| 49 | Create | — | `src/services/api.ts` |
-| 50 | Create | — | `src/services/authService.ts` |
-| 51 | Create | — | `src/services/rideService.ts` |
-| 52 | Create | — | `src/services/chatService.ts` |
-| 53 | Create | — | `src/services/userService.ts` |
+| #   | Action | Source | Destination                   |
+| --- | ------ | ------ | ----------------------------- |
+| 49  | Create | —      | `src/services/api.ts`         |
+| 50  | Create | —      | `src/services/authService.ts` |
+| 51  | Create | —      | `src/services/rideService.ts` |
+| 52  | Create | —      | `src/services/chatService.ts` |
+| 53  | Create | —      | `src/services/userService.ts` |
 
 ### Round 8 — Hooks & CI
 
-| # | Action | Source | Destination |
-|---|--------|--------|-------------|
-| 54 | Create | — | `.claude/settings.json` |
-| 55 | Create | — | `.github/workflows/ci.yml` |
-| 56 | Setup | — | Husky + lint-staged |
+| #   | Action | Source | Destination                |
+| --- | ------ | ------ | -------------------------- |
+| 54  | Create | —      | `.claude/settings.json`    |
+| 55  | Create | —      | `.github/workflows/ci.yml` |
+| 56  | Setup  | —      | Husky + lint-staged        |
 
 ### Round 9 — Tests
 
-| # | Action | Source | Destination |
-|---|--------|--------|-------------|
-| 57 | Create | — | `test/unit/utils/dom.test.ts` |
-| 58 | Create | — | `test/unit/utils/router.test.ts` |
-| 59 | Create | — | `test/unit/contracts/schemas.test.ts` |
-| 60 | Create | — | `test/integration/api/rides.test.ts` |
-| 61 | Create | — | `test/integration/api/auth.test.ts` |
+| #   | Action | Source | Destination                           |
+| --- | ------ | ------ | ------------------------------------- |
+| 57  | Create | —      | `test/unit/utils/dom.test.ts`         |
+| 58  | Create | —      | `test/unit/utils/router.test.ts`      |
+| 59  | Create | —      | `test/unit/contracts/schemas.test.ts` |
+| 60  | Create | —      | `test/integration/api/rides.test.ts`  |
+| 61  | Create | —      | `test/integration/api/auth.test.ts`   |
 
 ### Round 10 — Cleanup
 
-| # | Action | Source | Destination |
-|---|--------|--------|-------------|
-| 62 | Delete | `app.js` | (replaced by `src/`) |
-| 63 | Delete | `style.css` | (replaced by `src/styles/`) |
-| 64 | Delete | `icons/` | (moved to `public/icons/`) |
-| 65 | Update | `index.html` | Point to new entry, strip inline markup |
-| 66 | Verify | — | `npm run build` succeeds |
-| 67 | Verify | — | `npm run test` passes |
-| 68 | Verify | — | `npm run lint` clean |
+| #   | Action | Source       | Destination                             |
+| --- | ------ | ------------ | --------------------------------------- |
+| 62  | Delete | `app.js`     | (replaced by `src/`)                    |
+| 63  | Delete | `style.css`  | (replaced by `src/styles/`)             |
+| 64  | Delete | `icons/`     | (moved to `public/icons/`)              |
+| 65  | Update | `index.html` | Point to new entry, strip inline markup |
+| 66  | Verify | —            | `npm run build` succeeds                |
+| 67  | Verify | —            | `npm run test` passes                   |
+| 68  | Verify | —            | `npm run lint` clean                    |
 
 ---
 
@@ -867,11 +892,13 @@ This is the execution order for actually moving/creating files:
 ## Dependency Summary
 
 ### Production Dependencies
+
 ```
 express, cors, helmet, dotenv, zod, jsonwebtoken, bcryptjs
 ```
 
 ### Dev Dependencies
+
 ```
 typescript, vite, tsx, concurrently,
 vitest, @vitest/coverage-v8, @vitest/ui,
@@ -883,4 +910,4 @@ husky, lint-staged,
 
 ---
 
-*This plan was generated by analyzing the COMMUTR v5 codebase and the claude-organizer repository patterns. Execute the phases sequentially — each builds on the previous. Commit after each phase.*
+_This plan was generated by analyzing the COMMUTR v5 codebase and the claude-organizer repository patterns. Execute the phases sequentially — each builds on the previous. Commit after each phase._

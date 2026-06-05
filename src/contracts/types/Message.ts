@@ -11,6 +11,8 @@ export interface Conversation {
   id: string
   participantIds: string[]
   rideId?: string
+  seatRequestId?: string
   lastMessage?: Message
   updatedAt: string
+  createdAt?: string
 }

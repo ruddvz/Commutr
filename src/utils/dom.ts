@@ -8,7 +8,10 @@ export function byId<T extends HTMLElement = HTMLElement>(id: string): T {
   return el
 }
 
-export function qsa<T extends Element = Element>(selector: string, root: Element | Document = document): T[] {
+export function qsa<T extends Element = Element>(
+  selector: string,
+  root: Element | Document = document,
+): T[] {
   return Array.from(root.querySelectorAll<T>(selector))
 }
 

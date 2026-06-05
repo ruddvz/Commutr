@@ -16,4 +16,5 @@
  * individual imports of the CSS modules above.
  */
 
+@import './tokens.css';
 @import url('../../style.css');

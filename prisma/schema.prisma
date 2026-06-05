@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  phone        String?
+  verified     Boolean  @default(false)
+  verifiedId   Boolean  @default(false)
+  ratingAvg    Float    @default(0)
+  ratingCount  Int      @default(0)
+  role         String   @default("passenger")
+  createdAt    DateTime @default(now())
+
+  ridesAsDriver Ride[]
+  seatRequests  SeatRequest[]
+  messages      Message[]
+  conversations ConversationParticipant[]
+  blocksGiven   Block[]                   @relation("blocksGiven")
+  blocksReceived Block[]                  @relation("blocksReceived")
+  subscription  Subscription?
+}
+
+model Ride {
+  id             String   @id @default(uuid())
+  driverId       String
+  origin         String
+  destination    String
+  departureAt    String
+  pricePerSeat   Float
+  seatsTotal     Int
+  seatsAvailable Int
+  stops          String   @default("[]")
+  notes          String?
+  amenities      String   @default("[]")
+  status         String   @default("active")
+  createdAt      DateTime @default(now())
+
+  driver       User          @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  seatRequests SeatRequest[]
+  conversations Conversation[]
+}
+
+model SeatRequest {
+  id             String    @id @default(uuid())
+  rideId         String
+  passengerId    String
+  requestedSeats Int
+  status         String    @default("requested")
+  holdExpiresAt  DateTime?
+  totalCostShare Float?
+  createdAt      DateTime  @default(now())
+
+  ride      Ride @relation(fields: [rideId], references: [id], onDelete: Cascade)
+  passenger User @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+  @@index([rideId])
+  @@index([passengerId])
+}
+
+model Conversation {
+  id            String   @id @default(uuid())
+  rideId        String?
+  seatRequestId String?
+  lastMessageAt DateTime @default(now())
+  createdAt     DateTime @default(now())
+
+  ride         Ride?                       @relation(fields: [rideId], references: [id], onDelete: SetNull)
+  participants ConversationParticipant[]
+  messages     Message[]
+}
+
+model ConversationParticipant {
+  conversationId String
+  userId         String
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([conversationId, userId])
+}
+
+model Message {
+  id             String   @id @default(uuid())
+  conversationId String
+  senderId       String
+  text           String
+  read           Boolean  @default(false)
+  sentAt         DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+}
+
+model Subscription {
+  id                     String   @id @default(uuid())
+  userId                 String   @unique
+  plan                   String   @default("free")
+  status                 String   @default("active")
+  freePostsUsedThisMonth Int      @default(0)
+  currentPeriodEnd       DateTime?
+  createdAt              DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id           String   @id @default(uuid())
+  reporterId   String
+  targetUserId String?
+  rideId       String?
+  reason       String
+  details      String?
+  status       String   @default("open")
+  createdAt    DateTime @default(now())
+}
+
+model Block {
+  id        String   @id @default(uuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+
+  blocker User @relation("blocksGiven", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("blocksReceived", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+}

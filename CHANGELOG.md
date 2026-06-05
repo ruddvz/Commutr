@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - TypeScript migration: `src/` directory with strict `tsconfig.json`
 - Vite build toolchain with dev proxy to Express API
 - Express API backend (`server/`) with JWT auth, Zod validation, rate limiting, Helmet security
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.0.0] — 2025-01-01
 
 ### Added
+
 - Complete mobile-first PWA prototype with 15 screens
 - Glassmorphism dark UI design system with CSS custom properties
 - Onboarding flow (3 slides) with dot indicators
