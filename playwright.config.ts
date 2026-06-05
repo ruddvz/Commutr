@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig } from '@playwright/test'
 
 export default defineConfig({
   testDir: 'e2e',
@@ -10,8 +10,14 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   projects: [
-    { name: 'iphone-se', use: { ...devices['iPhone SE'] } },
-    { name: 'iphone-14', use: { ...devices['iPhone 14'] } },
+    {
+      name: 'iphone-se',
+      use: { browserName: 'chromium', viewport: { width: 375, height: 667 } },
+    },
+    {
+      name: 'iphone-14',
+      use: { browserName: 'chromium', viewport: { width: 390, height: 844 } },
+    },
   ],
   webServer: {
     command: 'pnpm exec vite preview --port 4173 --strictPort --host 127.0.0.1',
