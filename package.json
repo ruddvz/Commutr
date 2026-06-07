@@ -27,6 +27,7 @@
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install chromium",
     "screenshots": "node scripts/capture-screenshots.mjs",
+    "icons:png": "node scripts/generate-png-icons.mjs",
     "prepare": "husky"
   },
   "keywords": [
@@ -77,6 +78,7 @@
     "lint-staged": "^15.2.10",
     "prettier": "^3.4.2",
     "prisma": "^5.22.0",
+    "sharp": "0.33.5",
     "supertest": "^7.0.0",
     "tsx": "^4.16.0",
     "typescript": "^5.5.4",

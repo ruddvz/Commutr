@@ -62,3 +62,15 @@ export function iconChevronRight(): string {
 export function iconSend(): string {
   return `<svg ${svgAttrs} aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>`
 }
+
+export function iconCheck(): string {
+  return `<svg ${svgAttrs} aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>`
+}
+
+export function iconInfo(): string {
+  return `<svg ${svgAttrs} aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/></svg>`
+}
+
+export function iconStar(): string {
+  return `<svg ${svgAttrs} aria-hidden="true"><path d="m12 2 3.1 6.3L22 9.3l-5 4.9 1.2 6.9L12 17.8l-6.2 3.3 1.2-6.9-5-4.9 6.9-1z"/></svg>`
+}

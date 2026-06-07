@@ -31,6 +31,19 @@ describe('demo data', () => {
     const rides = filterDemoRides({ verifiedOnly: true })
     rides.forEach((r) => expect(r.driverVerified).toBe(true))
   })
+
+  it('filters women-preferred only', () => {
+    const rides = filterDemoRides({ womenPreferredOnly: true })
+    expect(rides.length).toBeGreaterThan(0)
+    rides.forEach((r) => {
+      expect(r.amenities.some((a) => a.toLowerCase().includes('women'))).toBe(true)
+    })
+  })
+
+  it('filters by max price per seat', () => {
+    const rides = filterDemoRides({ maxPricePerSeat: 30 })
+    rides.forEach((r) => expect(r.pricePerSeat).toBeLessThanOrEqual(30))
+  })
 })
 
 describe('searchRides fallback contract', () => {

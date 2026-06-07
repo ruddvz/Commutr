@@ -1,6 +1,6 @@
 import { api } from './api'
 import type { Message, Conversation } from '@/contracts/types/Message'
-import { isStaticDemo } from '@/config/runtime'
+import { isDemoExperience } from '@/config/runtime'
 import {
   getDemoConversation,
   getDemoConversations,
@@ -13,17 +13,17 @@ export type ConversationView = DemoConversation
 
 export const chatService = {
   getConversations(): Promise<ConversationView[]> {
-    if (isStaticDemo) return Promise.resolve(getDemoConversations())
+    if (isDemoExperience()) return Promise.resolve(getDemoConversations())
     return api.get<ConversationView[]>('/chat/conversations')
   },
 
   getMessages(conversationId: string): Promise<Message[]> {
-    if (isStaticDemo) return Promise.resolve(getDemoMessages(conversationId))
+    if (isDemoExperience()) return Promise.resolve(getDemoMessages(conversationId))
     return api.get<Message[]>(`/chat/conversations/${conversationId}/messages`)
   },
 
   sendMessage(conversationId: string, text: string): Promise<Message> {
-    if (isStaticDemo) {
+    if (isDemoExperience()) {
       const message: Message = {
         id: `demo-msg-${Date.now()}`,
         conversationId,
@@ -39,7 +39,7 @@ export const chatService = {
   },
 
   getConversation(id: string): Promise<ConversationView | undefined> {
-    if (isStaticDemo) return Promise.resolve(getDemoConversation(id))
+    if (isDemoExperience()) return Promise.resolve(getDemoConversation(id))
     return api.get<Conversation>(`/chat/conversations/${id}`).then((c) => c as ConversationView)
   },
 }

@@ -16,6 +16,8 @@ import { escapeHtml } from '@/utils/dom'
 let lastSearch: { origin?: string; destination?: string; date?: string; seats?: number } = {}
 let sortOrder: 'earliest' | 'cheapest' = 'earliest'
 let filterVerified = false
+let filterWomenPreferred = false
+let maxPricePerSeat: number | undefined
 
 function readSearchForm(container: HTMLElement): typeof lastSearch {
   const origin = container.querySelector<HTMLInputElement>('#search-origin')?.value.trim()
@@ -54,7 +56,10 @@ export function renderSearchScreen({ container }: ScreenRenderContext): void {
           renderChip('Cheapest', { action: 'sort-cheapest', pressed: sortOrder === 'cheapest' }),
           renderChip('Earliest', { action: 'sort-earliest', pressed: sortOrder === 'earliest' }),
           renderChip('Verified', { action: 'filter-verified', pressed: filterVerified }),
-          renderChip('Women-preferred', {}),
+          renderChip('Women-preferred', {
+            action: 'filter-women',
+            pressed: filterWomenPreferred,
+          }),
         ].join(''),
       )}
 
@@ -108,19 +113,57 @@ function bindSearchEvents(container: HTMLElement): void {
     filterVerified = !filterVerified
     void runSearch(container)
   })
+
+  container.querySelector('[data-action="filter-women"]')?.addEventListener('click', () => {
+    filterWomenPreferred = !filterWomenPreferred
+    void runSearch(container)
+  })
+
+  container.querySelector('[data-action="search-run"]')?.addEventListener('click', () => {
+    const panel = container.querySelector('#search-form-panel')
+    panel?.classList.add('cm-hidden')
+    void runSearch(container)
+  })
 }
 
 function openFilterSheet(container: HTMLElement): void {
   openBottomSheet(
     'Filters',
     `
-      ${renderInputField({ id: 'filter-max-price', label: 'Max price per seat', type: 'number', placeholder: '50' })}
-      ${renderChipRow(renderChip('Verified only', { pressed: filterVerified, action: 'sheet-verified' }))}
+      ${renderInputField({
+        id: 'filter-max-price',
+        label: 'Max price per seat ($)',
+        type: 'number',
+        placeholder: '50',
+        value: maxPricePerSeat !== undefined ? String(maxPricePerSeat) : '',
+        min: '0',
+      })}
+      ${renderChipRow(
+        [
+          renderChip('Verified only', { pressed: filterVerified, action: 'sheet-verified' }),
+          renderChip('Women-preferred', {
+            pressed: filterWomenPreferred,
+            action: 'sheet-women',
+          }),
+        ].join(''),
+      )}
     `,
     renderButton('Apply filters', { variant: 'primary', block: true, action: 'apply-filters' }),
   )
 
+  document.querySelector('[data-action="sheet-verified"]')?.addEventListener('click', () => {
+    filterVerified = !filterVerified
+  })
+  document.querySelector('[data-action="sheet-women"]')?.addEventListener('click', () => {
+    filterWomenPreferred = !filterWomenPreferred
+  })
+
   document.querySelector('[data-action="apply-filters"]')?.addEventListener('click', () => {
+    const raw = document.querySelector<HTMLInputElement>('#filter-max-price')?.value.trim()
+    maxPricePerSeat = raw ? parseInt(raw, 10) : undefined
+    if (maxPricePerSeat !== undefined && Number.isNaN(maxPricePerSeat)) {
+      maxPricePerSeat = undefined
+    }
     closeBottomSheet()
     void runSearch(container)
   })
@@ -196,6 +239,8 @@ export async function runSearch(container?: HTMLElement): Promise<void> {
     date: lastSearch.date,
     seats: lastSearch.seats,
     verifiedOnly: filterVerified,
+    womenPreferredOnly: filterWomenPreferred,
+    maxPricePerSeat,
   })
 
   const sorted = sortRides(result.rides)

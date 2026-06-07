@@ -1,6 +1,6 @@
 import { rideService } from '@/services/rideService'
 import { authService } from '@/services/authService'
-import { isStaticDemo } from '@/config/runtime'
+import { isDemoExperience } from '@/config/runtime'
 import { appStore } from '@/app/store'
 import { go } from '@/utils/router'
 import { showToast } from '@/components/toast'
@@ -264,7 +264,7 @@ function updatePriceGuardrail(): void {
 
 export async function submitPostRide(): Promise<void> {
   readDraftFromDom()
-  if (!authService.isAuthenticated() && !isStaticDemo) {
+  if (!authService.isAuthenticated() && !isDemoExperience()) {
     showToast('Sign in to post a ride')
     go('signup')
     return
@@ -296,7 +296,7 @@ export async function submitPostRide(): Promise<void> {
       seatsTotal: draft.seatsTotal,
       stops: draft.pickupSpot ? [draft.pickupSpot, draft.dropoffSpot].filter(Boolean) : [],
       notes: draft.pickupSpot ? `${draft.pickupSpot} → ${draft.dropoffSpot}` : undefined,
-      amenities: draft.preferences,
+      amenities: draft.preferences.map((p) => p.toLowerCase().replace(/\s+/g, '-')),
     })
     lastPostedRide = ride
     showSuccess = true

@@ -3,6 +3,7 @@ import { renderBadge } from '@/components/Badge'
 import { showEmpty } from '@/components/uiStates'
 import { go } from '@/utils/router'
 import type { ScreenRenderContext } from '@/app/screenRegistry'
+import { iconCheck, iconInfo, iconStar } from '@/components/icons'
 import { escapeHtml } from '@/utils/dom'
 
 const NOTIFICATIONS = [
@@ -74,7 +75,7 @@ function renderNotifs(container: HTMLElement): void {
 }
 
 function iconFor(type: string): string {
-  if (type === 'success') return '✓'
-  if (type === 'info') return 'i'
-  return '★'
+  if (type === 'success') return iconCheck()
+  if (type === 'info') return iconInfo()
+  return iconStar()
 }

@@ -178,6 +178,15 @@
   border-bottom: 0;
 }
 
+.cm-settings-row--disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
+.cm-settings-row--disabled .cm-settings-row__chevron {
+  opacity: 0.5;
+}
+
 .cm-settings-row__icon {
   width: 36px;
   height: 36px;
